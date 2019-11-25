@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title>Games</title>		
+		<meta name="viewport" content="width=device-width, initial-scale=1" />
+		<link rel="stylesheet" type="text/css" href="css/app.css">
+		<link rel="stylesheet" type="text/css" href="css/Styles/green.css">
+	</head>
+	<body>
+		<div id="error"><ul id="errorList"></ul></div>		
+		<div class="header">			
+			<div class="caption-big">Порєшатєль</div>
+			<div class="caption-small">П</div>
+			<div class="menu right">
+				<select id='main-menu' >
+					<option value='index'>Simplex</option>					
+					<option value='dual_simplex' selected>Dual Simplex</option>
+				</select>
+			</div>
+		</div>	
+		<div class="body">
+			<div>
+				<div class="tip"> C-vector: </div>
+				<textarea id="cInput" class="block" rows="1" onkeyup ="cInputChanged(this)"></textarea>
+			</div>
+			<div>
+				<div class="tip"> Basis: (start from 1) </div>
+				<textarea id="bInput" class="block" rows="1" onkeyup ="bInputChanged(this)"></textarea>
+			</div>
+			<div>
+				<div class="tip"> Input matrix: (Separate numbers by comma, lines by ';') </div>
+				<textarea id="input" class="block" rows="5" onkeyup ="inputChanged(this)"></textarea>
+			</div>									
+			<div class="block">
+				<button id="run2Btn" onclick="runSimplex('cInput','bInput','input','testRes');" >Run Simplex</button>	
+			</div>
+			<div class="block">
+				<div id='testRes'></div>
+			</div>					
+		</div>
+		<div class="footer">
+			<!---->
+		</div>
+		
+		<script src="js/Router.js"></script>	
+		<script src="js/UI/Error.js"></script>
+		<script src="js/Math/Math.js"></script>
+		<script src="js/Math/Simplex.js"></script>
+		
+	</body>
+</html>

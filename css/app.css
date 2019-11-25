@@ -1,0 +1,64 @@
+html { height: 100%; background-color: white;}
+body {  background-color: #eee; width: 100%; margin:0px;  }
+
+button, label, select, textarea { font-size: 150%; }
+textarea {width: 98%; padding:1%; }
+.result {background-color: #f3f3f3;}
+input { width: 200px; text-align:center; }
+.block { display:block;}
+.stretch { width: 100%; background-color:red; }
+.m-left { margin-left: 10px; }
+.m-right { margin-right: 10px; }
+button { padding: 0px 20px 0px 20px; }
+.right { float: right; }
+.header { width: 100%; background-color: steelblue; height: 60px; border-bottom: darkgray 5px solid;  }
+.caption-big { color: white; margin: 10px; font-size: 200%; font-weight: bold; display: inline-block; }
+.caption-small { 
+	display: none;
+	color: white; margin: 10px; font-size: 200%; font-weight: bold;  
+}
+.footer { 
+	width: 100%; background-color: steelblue; height: 20px; 
+}
+.body { margin: 10px; }
+.tip {font-size:50%; margin: 5px; font-weight: bold;}
+.desc { color: #666;}
+#error { 
+	position: fixed; bottom: 0px; width: 100%; font-weight: normal; opacity: 0;
+	background-color: indianred; border-top: 2px solid darkred; color: white;  padding-left: 10px; 
+}
+#errorList { padding: 0px;  margin: 5px; margin-left: 20px; }
+
+#main-menu {
+	padding: 10px;
+	background: transparent;
+	color: white;
+	border: 0px;
+	height: 60px;
+}
+#main-menu > option {
+	color: black;
+}
+#main-menu {
+	font-weight: bold;
+	direction: rtl;
+	margin-right: 5px;
+}
+
+@media screen and (max-width: 500px) {
+	.caption-big {
+		display: none;
+	}
+	.caption-small {
+		display: inline-block;
+	}
+}
+table, td {
+	border: 1px solid black;
+}
+td { text-align: center; padding: 2px; color:gray; }
+td.num { font-weight: bold; color:black; }
+label.log { font-size: 14px; font-family: "consolas"; display:block; }
+#testRes {background:white; padding: 10px; border-left: 4px solid cadetblue; margin-top: 5px;
+	overflow : auto;
+}
