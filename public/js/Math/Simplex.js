@@ -1,4 +1,3 @@
-<!--UI Elements-->
 var errorListEl;
 var errEl;
 var matrixInputEl;
