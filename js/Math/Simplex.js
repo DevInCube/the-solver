@@ -17,6 +17,7 @@ var model = {
 	B : new Matrix(),
 	E : new Matrix()
 };
+let modelProxy = null;
 
 window.onload = function(){
 	bindMobileHardwareBtn();
@@ -31,7 +32,7 @@ window.onload = function(){
 	runEl = document.getElementById("runBtn");
 	runDeltasEl = document.getElementById("run2Btn");
 	basisRowsEl = document.getElementById("basisRows");
-	Object.observe(model, function(e){
+	modelProxy = new Proxy(model, function(e){
 		runEl.disabled = !(model.A.valid && model.E.valid);
 		runDeltasEl.disabled = !(model.A.valid && model.B.valid && model.C.valid);
 		checkBegin();

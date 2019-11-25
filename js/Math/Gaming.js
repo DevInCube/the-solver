@@ -6,6 +6,7 @@ var matrixOutputEl;
 var model = {
 	A : new Matrix()
 }
+let modelProxy = null;
 
 window.onload = function(){
 	matrixEl = document.getElementById("matrix");
@@ -13,7 +14,7 @@ window.onload = function(){
 	simplifyMatrix.onclick = simplifyA;
 	matrixOutputEl = document.getElementById("output");
 	Error.init();
-	Object.observe(model, function(e){			
+	modelProxy = new Proxy(model, function(e){			
 		simplifyMatrix.disabled = !(model.A.valid);
 		Error.check(function(){			
 			if(!model.A.valid) Error.add("invalid matrix");
