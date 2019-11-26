@@ -39,27 +39,29 @@
 				<textarea id="elEl" class="block" rows="1" onkeyup ="eInputChanged(this)"></textarea>
 			</div>
 			<div class="block">
-				<button id="runBtn" onclick="mathRun()" disabled >Calculate</button>
+				<button id="runBtn" disabled >Calculate</button>
 				<button id="moveUpBtn" class="right" onclick="moveUp()">&uarr;&uarr;&uarr;</button>
 			</div>
 			<textarea id="output" class="block result" rows="5"></textarea>
 			<div class="tip"> Here is new matrix output. </div>
 			<div class="block">
-				<button id="run2Btn" onclick="calcDeltas()" disabled >Deltas</button>	
+				<button id="run2Btn" disabled >Deltas</button>	
 			</div>
 			<textarea id="deltaOutput" class="block result" rows="1"></textarea>
 			<div class="tip"> Here are deltas. </div>
+			<div class="block">
+				<div id="testRes"></div>
+			</div>		
 		</div>		
 		<div class="footer">
 			<!---->
 		</div>
 		
 		<script src="js/Router.js"></script>
-		<script src="js/Math/Math.js"></script>
+		<script src="js/UI/Matrix.js"></script>
+		<script src="js/UI/Format.js"></script>
+		<script src="js/Math/Matrix.js"></script>
 		<script src="js/Math/Simplex.js"></script>
-				
-		<script>
-			
-		</script>
+		<script src="js/Test/Test.js"></script>
 	</body>
 </html>

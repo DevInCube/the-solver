@@ -1,8 +1,8 @@
-var matrixEl;
-var simplifyMatrix;
-var matrixOutputEl;
+let matrixEl;
+let simplifyMatrix;
+let matrixOutputEl;
 
-var model = new Proxy({
+let model = new Proxy({
 	A: new Matrix()
 }, {
 	get(target, key, val) {
@@ -28,13 +28,13 @@ window.onload = function () {
 }
 
 function simplifyA() {
-	var mat = new Matrix();
+	let mat = new Matrix();
 	mat.copy(model.A);
-	for (var i = 0; i < mat.height; i++)
+	for (let i = 0; i < mat.height; i++)
 		mat.items[i][mat.width] = i + 1;
-	var lastLine = [];
-	for (var j = 0; j < mat.width + 1; j++)
-		if (j == mat.width)
+	let lastLine = [];
+	for (let j = 0; j < mat.width + 1; j++)
+		if (j === mat.width)
 			lastLine[j] = NaN;
 		else
 			lastLine[j] = (j + 1);
@@ -45,12 +45,12 @@ function simplifyA() {
 }
 
 function simplifyIteration(m) {
-	/*var sim = false;
-	var remRows = [];	
-	for(var i = 0; i < m.height - 1; i++)
-		for(var k = 0; k < m.height - 1; k++)
+	/*let sim = false;
+	let remRows = [];	
+	for(let i = 0; i < m.height - 1; i++)
+		for(let k = 0; k < m.height - 1; k++)
 			if(i!=k){
-				for(var j = 0; j < m.width - 1; j++)
+				for(let j = 0; j < m.width - 1; j++)
 					if(m[i][j]>=
 			}
 	return sim;*/
@@ -58,8 +58,8 @@ function simplifyIteration(m) {
 
 //matrix input
 function inputChanged(inputEl) {
-	var matStr = inputEl.value;
-	if (matStr.slice(-1) == ";") //auto newline
+	let matStr = inputEl.value;
+	if (matStr.slice(-1) === ";") //auto newline
 	{
 		inputEl.value += "\r\n";
 		matStr = inputEl.value;

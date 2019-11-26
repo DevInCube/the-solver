@@ -29,7 +29,7 @@
 	}
 	
 	error.add = function(msg){
-		var item = document.createElement("li");
+		let item = document.createElement("li");
 		item.innerHTML = msg;
 		error.errorListEl.appendChild(item);
 	}

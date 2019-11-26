@@ -1,9 +1,9 @@
-var router = new Router();
+let router = new Router();
 router.init();
 
 function Router(){
 	this.init = function(){
-		var mainMenu = document.getElementById("main-menu");
+		let mainMenu = document.getElementById("main-menu");
 		mainMenu.addEventListener("change", function(e){
 			window.location = mainMenu.value + ".html";
 		});
@@ -11,8 +11,8 @@ function Router(){
 }
 
 function clone(id){
-	var importFrom = document.getElementById(id).lastChild;
-	var clone = importFrom.cloneNode(true);
-	var importTo = document.getElementById('import');
+	let importFrom = document.getElementById(id).lastChild;
+	let clone = importFrom.cloneNode(true);
+	let importTo = document.getElementById('import');
 	importTo.appendChild(clone);
 }

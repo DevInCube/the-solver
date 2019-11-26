@@ -58,7 +58,11 @@ table, td {
 }
 td { text-align: center; padding: 2px; color:gray; }
 td.num { font-weight: bold; color:black; }
-label.log { font-size: 14px; font-family: "consolas"; display:block; }
-#testRes {background:white; padding: 10px; border-left: 4px solid cadetblue; margin-top: 5px;
+label.log { font-size: 14px; font-family: 'Courier New', Courier, monospace; display:block; }
+#testRes {
+	background:white; 
+	padding: 10px; 
+	border-left: 4px solid cadetblue; 
+	margin-top: 5px;
 	overflow : auto;
 }
