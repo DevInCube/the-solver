@@ -23,24 +23,24 @@
 		</div>	
 		<div class="body">
 			<div>
-				<div class="tip"> C-vector: </div>
-				<textarea id="cInput" class="block" rows="1" onkeyup ="cInputChanged(this)"></textarea>
+				<div class="tip"> C-vector (separate numbers by comma): </div>
+				<textarea id="cInput" class="block" rows="1"></textarea>
 			</div>
 			<div>
 				<div class="tip"> Basis: (start from 1) </div>
-				<textarea id="bInput" class="block" rows="1" onkeyup ="bInputChanged(this)"></textarea>
+				<textarea id="bInput" class="block" rows="1"></textarea>
 			</div>
 			<div>
-				<div class="tip"> Input matrix: (Separate numbers by comma, lines by ';') </div>
-				<textarea id="input" class="block" rows="5" onkeyup ="inputChanged(this)"></textarea>
+				<div class="tip"> Input matrix: (separate numbers by comma, lines by semicolon) </div>
+				<textarea id="input" class="block" rows="5"></textarea>
 			</div>
 			<div class="block"> 
 				<div class="tip"> Special element position: (start from 0)</div>
-				<textarea id="elEl" class="block" rows="1" onkeyup ="eInputChanged(this)"></textarea>
+				<textarea id="elEl" class="block" rows="1"></textarea>
 			</div>
 			<div class="block">
 				<button id="runBtn" disabled >Calculate</button>
-				<button id="moveUpBtn" class="right" onclick="moveUp()">&uarr;&uarr;&uarr;</button>
+				<button id="moveUpBtn" class="right">&uarr;&uarr;&uarr;</button>
 			</div>
 			<textarea id="output" class="block result" rows="5"></textarea>
 			<div class="tip"> Here is new matrix output. </div>
@@ -63,5 +63,6 @@
 		<script src="js/Math/Matrix.js"></script>
 		<script src="js/Math/Simplex.js"></script>
 		<script src="js/Test/Test.js"></script>
+		<script src="js/Pages/Simplex.js"></script>
 	</body>
 </html>

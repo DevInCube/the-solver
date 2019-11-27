@@ -1,9 +1,9 @@
 
-function Matrix() {
+function Matrix(width = 0, height = 0, items = null) {
 
-	this.width = 0;
-	this.height = 0;
-	this.items = null;
+	this.width = width;
+	this.height = height;
+	this.items = items;
 	this.valid = false;
 }
 
@@ -16,6 +16,13 @@ Matrix.prototype.copy = function (m) {
 		for (let j = 0; j < this.width; j++)
 			this.items[i][j] = m.items[i][j];
 	this.valid = m.valid;
+}
+
+Matrix.prototype.clone = function () 
+{
+	let clone = new Matrix();
+	clone.copy(this);
+	return clone;
 }
 
 Matrix.prototype.toString = function (digits) {
