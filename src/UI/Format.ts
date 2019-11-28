@@ -1,4 +1,4 @@
-import { createArray, Matrix } from "../Math/Matrix";
+import Matrix from "../Math/Matrix";
 
 //returns Matrix instance parsed from string
 export function parseMatrix(str: string) {
@@ -47,7 +47,7 @@ export function formatMatrix(m: Matrix, digits: number = 3) {
 	return norm.map(row => row.join(' , ')).join(';\n');
 
 	function normalizeMatrixOutput(matrix: Matrix, digits: number = 3) {
-		let copy = createArray(matrix.height, matrix.width);
+		let copy = Matrix.createArray(matrix.height, matrix.width);
 		for (let i = 0; i < matrix.height; i++) {
 			for (let j = 0; j < matrix.width; j++) {
 				copy[i][j] = normalizedNumber(Number(matrix.items[i][j]), digits);

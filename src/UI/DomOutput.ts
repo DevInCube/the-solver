@@ -1,8 +1,8 @@
-import { Matrix } from "../Math/Matrix";
+import Matrix from "../Math/Matrix";
 import { Tableau, SimplexLog } from "../Math/Simplex";
 import { normalizedNumber } from "./Format";
 
-export function matrixToTable(m: Matrix) {
+export function matrixToTable(m: Matrix): HTMLTableElement {
 	let digits = 3;
 	let table = document.createElement("table");
 	for (let i = 0; i < m.height; i++) {
@@ -23,7 +23,7 @@ export function matrixToTable(m: Matrix) {
 	return table;
 };
 
-export function tableauToTable(t: Tableau) {
+export function tableauToTable(t: Tableau): HTMLTableElement {
     let rowShift = 2;
     let colShift = 4;
     let n = t.B.width + rowShift;
@@ -87,7 +87,7 @@ export function tableauToTable(t: Tableau) {
     return table;
 }
 
-export function printSimplexLog(log: SimplexLog, el: HTMLElement) {
+export function printSimplexLog(log: SimplexLog, el: HTMLElement): void {
     label(el, "=================================");
     let fn = "max f(x) = ";
     for (let i = 0; i < log.problem.width; i++) {
@@ -101,10 +101,10 @@ export function printSimplexLog(log: SimplexLog, el: HTMLElement) {
         label(el, "Iteration " + it + ":");
         el.appendChild(tableauToTable(iteration.table));
         if (iteration.minusRowIndex === -1) {
+            if (!iteration.x) throw new Error(`Invalid log: missing x`);
             label(el, "=================================");
             label(el, "No negative elements.");
             label(el, "x* = ");
-            if (!iteration.x) throw new Error(`Invalid log: missing x`);
             el.appendChild(matrixToTable(iteration.x));
             let res = 0;
             for (let i = 0; i < iteration.table.C.width; i++)
@@ -112,10 +112,9 @@ export function printSimplexLog(log: SimplexLog, el: HTMLElement) {
             label(el, "f(x*) = " + res);
         }
         else {
-            label(el, "deltas = ");
             if (!iteration.deltas) throw new Error(`Invalid log: missing deltas`);
             if (!iteration.gammasData) throw new Error(`Invalid log: missing gammasData`);
-
+            label(el, "deltas = ");
             el.appendChild(matrixToTable(iteration.deltas));
             if (!iteration.gammasData.hasMinusInRow) {
                 label(el, "=================================");

@@ -2,8 +2,8 @@ console.log('loaded;');
 
 import { testData } from "./Test/Test";
 import { doSimplex, Tableau, transform, getDeltas } from "./Math/Simplex";
-import { Errors } from "./UI/Errors";
-import { Matrix } from "./Math/Matrix";
+import Errors from "./UI/Errors";
+import Matrix from "./Math/Matrix";
 import { printSimplexLog } from "./UI/DomOutput";
 import { parseMatrix, formatMatrix } from "./UI/Format";
 

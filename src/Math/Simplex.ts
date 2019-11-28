@@ -1,4 +1,4 @@
-import { Matrix, createArray } from './Matrix'
+import Matrix from './Matrix'
 
 export class Tableau {
 	// A - matrix
@@ -41,7 +41,7 @@ export function doSimplex(table: Tableau): SimplexLog {
 		iterations: doIterations(),
 	};
 
-	function doIterations() {
+	function doIterations(): SimplexLogIteration[] {
 		let iterations = [];
 		while (true) {
 			let iteration = <SimplexLogIteration>{
@@ -91,31 +91,27 @@ export function doSimplex(table: Tableau): SimplexLog {
 }
 
 // m - Matrix, pi, pj - int
-export function transform(m: Matrix, pi: number, pj: number) {
+export function transform(m: Matrix, pi: number, pj: number): Matrix {
 	if (!m.valid) throw new Error(`transform: invalid matrix`)
-	if (typeof pi !== 'number' || typeof pj !== 'number')
-		throw new Error(`transform: indexes should be numbers`)
 	if (pi < 0 || pi >= m.height) throw new Error(`transform: invalid row index ${pi}`)
 	if (pj < 0 || pj >= m.width) throw new Error(`transform: invalid column index ${pj}`)
 	//
 	let El = m.items[pi][pj]; // special element value
-	let res = new Matrix(createArray(m.height, m.width));
+	let res = Matrix.create(m.height, m.width);
 	for (let i = 0; i < m.height; i++) {
 		for (let j = 0; j < m.width; j++) {
 			if (i === pi) {
 				res.items[i][j] = m.items[i][j] / El;
 			} else {
-				res.items[i][j] = m.items[i][j] - m.items[pi][j] * m.items[i][pj] / m.items[pi][pj];
+				res.items[i][j] = m.items[i][j] - m.items[pi][j] * m.items[i][pj] / El;
 			}
 		}
 	}
-	console.log(El)
-	console.table(res.items)
 	return res;
 }
 
-export function getGammasData(table: Tableau, minusRowIndex: number, deltas: Matrix) {
-	let gammas = new Matrix([Array(table.C.width)]);
+export function getGammasData(table: Tableau, minusRowIndex: number, deltas: Matrix): GammasData {
+	let gammas = Matrix.create(1, table.C.width);
 	let minGamma = Infinity;
 	let minGammaIndex = -1;
 	let hasMinusInRow = false;
@@ -140,8 +136,8 @@ export function getGammasData(table: Tableau, minusRowIndex: number, deltas: Mat
 	}
 }
 
-export function getDeltas(table: Tableau) {
-	let deltas = new Matrix([Array(table.C.width)]);
+export function getDeltas(table: Tableau): Matrix {
+	let deltas = Matrix.create(1, table.C.width);
 	for (let j = 0; j < table.C.width; j++) {
 		let delta = 0;
 		for (let bi = 0; bi < table.B.width; bi++) {

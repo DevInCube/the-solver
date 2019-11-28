@@ -1,13 +1,6 @@
 System.register("Math/Matrix", [], function (exports_1, context_1) {
     var Matrix;
     var __moduleName = context_1 && context_1.id;
-    function createArray(height, width) {
-        let m = new Array(height);
-        for (let i = 0; i < height; i++)
-            m[i] = new Array(width);
-        return m;
-    }
-    exports_1("createArray", createArray);
     return {
         setters: [],
         execute: function () {
@@ -19,10 +12,7 @@ System.register("Math/Matrix", [], function (exports_1, context_1) {
                 get height() { return this.items ? this.items.length : 0; }
                 get width() { return this.items && this.items[0] ? this.items[0].length : 0; }
                 copy(m) {
-                    this.items = createArray(m.height, m.width);
-                    for (let i = 0; i < this.height; i++)
-                        for (let j = 0; j < this.width; j++)
-                            this.items[i][j] = m.items[i][j];
+                    this.items = m.items.map(row => row.slice());
                     this.valid = m.valid;
                 }
                 clone() {
@@ -30,8 +20,17 @@ System.register("Math/Matrix", [], function (exports_1, context_1) {
                     clone.copy(this);
                     return clone;
                 }
+                static create(height, width) {
+                    return new Matrix(this.createArray(height, width));
+                }
+                static createArray(height, width) {
+                    let m = new Array(height);
+                    for (let i = 0; i < height; i++)
+                        m[i] = new Array(width);
+                    return m;
+                }
             };
-            exports_1("Matrix", Matrix);
+            exports_1("default", Matrix);
         }
     };
 });
@@ -53,7 +52,7 @@ System.register("Math/Simplex", ["Math/Matrix"], function (exports_2, context_2)
                 let minusRowIndex = firstNegativeRowIndex(table);
                 iteration.minusRowIndex = minusRowIndex;
                 if (minusRowIndex === -1) {
-                    let x = new Matrix_1.Matrix([Array(table.C.width).fill(0)]);
+                    let x = new Matrix_1.default([Array(table.C.width).fill(0)]);
                     for (let i = 0; i < table.B.width; i++) {
                         let index = table.B.items[0][i];
                         x.items[0][index - 1] = table.A.items[i][0];
@@ -93,32 +92,28 @@ System.register("Math/Simplex", ["Math/Matrix"], function (exports_2, context_2)
     function transform(m, pi, pj) {
         if (!m.valid)
             throw new Error(`transform: invalid matrix`);
-        if (typeof pi !== 'number' || typeof pj !== 'number')
-            throw new Error(`transform: indexes should be numbers`);
         if (pi < 0 || pi >= m.height)
             throw new Error(`transform: invalid row index ${pi}`);
         if (pj < 0 || pj >= m.width)
             throw new Error(`transform: invalid column index ${pj}`);
         //
         let El = m.items[pi][pj]; // special element value
-        let res = new Matrix_1.Matrix(Matrix_1.createArray(m.height, m.width));
+        let res = Matrix_1.default.create(m.height, m.width);
         for (let i = 0; i < m.height; i++) {
             for (let j = 0; j < m.width; j++) {
                 if (i === pi) {
                     res.items[i][j] = m.items[i][j] / El;
                 }
                 else {
-                    res.items[i][j] = m.items[i][j] - m.items[pi][j] * m.items[i][pj] / m.items[pi][pj];
+                    res.items[i][j] = m.items[i][j] - m.items[pi][j] * m.items[i][pj] / El;
                 }
             }
         }
-        console.log(El);
-        console.table(res.items);
         return res;
     }
     exports_2("transform", transform);
     function getGammasData(table, minusRowIndex, deltas) {
-        let gammas = new Matrix_1.Matrix([Array(table.C.width)]);
+        let gammas = Matrix_1.default.create(1, table.C.width);
         let minGamma = Infinity;
         let minGammaIndex = -1;
         let hasMinusInRow = false;
@@ -144,7 +139,7 @@ System.register("Math/Simplex", ["Math/Matrix"], function (exports_2, context_2)
     }
     exports_2("getGammasData", getGammasData);
     function getDeltas(table) {
-        let deltas = new Matrix_1.Matrix([Array(table.C.width)]);
+        let deltas = Matrix_1.default.create(1, table.C.width);
         for (let j = 0; j < table.C.width; j++) {
             let delta = 0;
             for (let bi = 0; bi < table.B.width; bi++) {
@@ -189,13 +184,13 @@ System.register("UI/Format", ["Math/Matrix"], function (exports_3, context_3) {
     var __moduleName = context_3 && context_3.id;
     //returns Matrix instance parsed from string
     function parseMatrix(str) {
-        let m = new Matrix_2.Matrix();
+        let m = new Matrix_2.default();
         if (!str) {
             return m;
         }
         try {
             let arr = JSON.parse(str);
-            return new Matrix_2.Matrix(arr);
+            return new Matrix_2.default(arr);
         }
         catch (err) {
             // custom format
@@ -235,7 +230,7 @@ System.register("UI/Format", ["Math/Matrix"], function (exports_3, context_3) {
         let norm = normalizeMatrixOutput(m, digits);
         return norm.map(row => row.join(' , ')).join(';\n');
         function normalizeMatrixOutput(matrix, digits = 3) {
-            let copy = Matrix_2.createArray(matrix.height, matrix.width);
+            let copy = Matrix_2.default.createArray(matrix.height, matrix.width);
             for (let i = 0; i < matrix.height; i++) {
                 for (let j = 0; j < matrix.width; j++) {
                     copy[i][j] = normalizedNumber(Number(matrix.items[i][j]), digits);
@@ -367,11 +362,11 @@ System.register("UI/DomOutput", ["UI/Format"], function (exports_4, context_4) {
             label(el, "Iteration " + it + ":");
             el.appendChild(tableauToTable(iteration.table));
             if (iteration.minusRowIndex === -1) {
+                if (!iteration.x)
+                    throw new Error(`Invalid log: missing x`);
                 label(el, "=================================");
                 label(el, "No negative elements.");
                 label(el, "x* = ");
-                if (!iteration.x)
-                    throw new Error(`Invalid log: missing x`);
                 el.appendChild(matrixToTable(iteration.x));
                 let res = 0;
                 for (let i = 0; i < iteration.table.C.width; i++)
@@ -379,11 +374,11 @@ System.register("UI/DomOutput", ["UI/Format"], function (exports_4, context_4) {
                 label(el, "f(x*) = " + res);
             }
             else {
-                label(el, "deltas = ");
                 if (!iteration.deltas)
                     throw new Error(`Invalid log: missing deltas`);
                 if (!iteration.gammasData)
                     throw new Error(`Invalid log: missing gammasData`);
+                label(el, "deltas = ");
                 el.appendChild(matrixToTable(iteration.deltas));
                 if (!iteration.gammasData.hasMinusInRow) {
                     label(el, "=================================");
@@ -519,7 +514,7 @@ System.register("UI/Errors", [], function (exports_6, context_6) {
             };
             Errors.errorListEl = null;
             Errors.errEl = null;
-            exports_6("Errors", Errors);
+            exports_6("default", Errors);
         }
     };
 });
@@ -583,21 +578,21 @@ System.register("main", ["Test/Test", "Math/Simplex", "UI/Errors", "Math/Matrix"
         return new Simplex_2.Tableau(A, b, c);
     }
     function checkSimplexTable(table) {
-        Errors_1.Errors.init();
-        Errors_1.Errors.check(function () {
+        Errors_1.default.init();
+        Errors_1.default.check(function () {
             if (!table.A.valid)
-                Errors_1.Errors.add("A is invalid");
+                Errors_1.default.add("A is invalid");
             if (!table.B.valid)
-                Errors_1.Errors.add("B is invalid");
+                Errors_1.default.add("B is invalid");
             if (!table.C.valid)
-                Errors_1.Errors.add("C is invalid");
+                Errors_1.default.add("C is invalid");
             if (table.B.width !== table.A.height)
-                Errors_1.Errors.add(`B length (${table.B.width}) != A height (${table.A.height})`);
+                Errors_1.default.add(`B length (${table.B.width}) != A height (${table.A.height})`);
             if (table.C.width !== table.A.width - 1)
-                Errors_1.Errors.add(`C length ${table.C.width} != A.width - 1 (${table.A.width - 1})`);
+                Errors_1.default.add(`C length ${table.C.width} != A.width - 1 (${table.A.width - 1})`);
             for (let i = 0; i < table.B.width; i++)
                 if ((table.B.items[0][i] - 1) >= table.C.width) {
-                    Errors_1.Errors.add(`B element {${table.B.items[0][i]}} is greater than C length (${table.C.width})`);
+                    Errors_1.default.add(`B element {${table.B.items[0][i]}} is greater than C length (${table.C.width})`);
                     break;
                 }
         });
@@ -607,7 +602,7 @@ System.register("main", ["Test/Test", "Math/Simplex", "UI/Errors", "Math/Matrix"
         let table = getSimplexTable(cIn, bIn, aIn);
         outEl.innerHTML = "";
         checkSimplexTable(table);
-        if (!Errors_1.Errors.hasErrors()) {
+        if (!Errors_1.default.hasErrors()) {
             let log = Simplex_2.doSimplex(table);
             DomOutput_2.printSimplexLog(log, outEl);
         }
@@ -657,26 +652,26 @@ System.register("main", ["Test/Test", "Math/Simplex", "UI/Errors", "Math/Matrix"
                     console.log('proxy set;');
                     runEl.disabled = !(model.A.valid && model.E.valid);
                     runDeltasEl.disabled = !(model.A.valid && model.B.valid && model.C.valid);
-                    Errors_1.Errors.check(() => {
+                    Errors_1.default.check(() => {
                         if (!model.A.valid)
-                            Errors_1.Errors.add("invalid matrix (A)");
+                            Errors_1.default.add("invalid matrix (A)");
                         if (model.A.valid) {
                             if (model.C.width !== model.A.width - 1)
-                                Errors_1.Errors.add(`c.length (${model.C.width}) != matrix.width - 1 (${model.A.width - 1})`);
+                                Errors_1.default.add(`c.length (${model.C.width}) != matrix.width - 1 (${model.A.width - 1})`);
                             if (model.B.width !== model.A.height)
-                                Errors_1.Errors.add(`basis length (${model.B.width}) != matrix height (${model.A.height})`);
+                                Errors_1.default.add(`basis length (${model.B.width}) != matrix height (${model.A.height})`);
                             for (let i = 0; i < model.B.width; i++) {
                                 let bi = model.B.items[i];
                                 if (bi < 0 || bi > model.C.width)
-                                    Errors_1.Errors.add("invalid basis element: " + bi);
+                                    Errors_1.default.add("invalid basis element: " + bi);
                             }
                             if (model.E.width < 2)
-                                Errors_1.Errors.add("position should have 2 values");
+                                Errors_1.default.add("position should have 2 values");
                             if (model.E.valid && model.E.width >= 2) {
                                 if (model.E.items[0][0] > model.A.height - 1)
-                                    Errors_1.Errors.add("invalid l element position: " + model.E.items[0][0]);
+                                    Errors_1.default.add("invalid l element position: " + model.E.items[0][0]);
                                 if (model.E.items[0][1] > model.A.width - 1)
-                                    Errors_1.Errors.add("invalid r element position: " + model.E.items[0][1]);
+                                    Errors_1.default.add("invalid r element position: " + model.E.items[0][1]);
                             }
                         }
                     });
@@ -691,14 +686,14 @@ System.register("main", ["Test/Test", "Math/Simplex", "UI/Errors", "Math/Matrix"
                 BString: "",
                 EString: "",
                 //
-                A: new Matrix_3.Matrix(),
-                C: new Matrix_3.Matrix(),
-                B: new Matrix_3.Matrix(),
-                E: new Matrix_3.Matrix()
+                A: new Matrix_3.default(),
+                C: new Matrix_3.default(),
+                B: new Matrix_3.default(),
+                E: new Matrix_3.default()
             }, modelProxyHandler);
             console.log('DOM fully loaded and parsed');
             bindMobileHardwareBtn();
-            Errors_1.Errors.init();
+            Errors_1.default.init();
             matrixInputEl = document.getElementById("input");
             matrixInputEl.addEventListener('keyup', inputChanged);
             matrixOutputEl = document.getElementById("output");

@@ -21,7 +21,7 @@ button { padding: 0px 20px 0px 20px; }
 	color: white; margin: 10px; font-size: 200%; font-weight: bold;  
 }
 .footer { 
-	width: 100%; background-color: steelblue; height: 20px; 
+	width: 100%; background-color: steelblue; height: 100px; 
 }
 .body { margin: 10px; }
 .tip {font-size:50%; margin: 5px; font-weight: bold;}

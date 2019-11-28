@@ -1,4 +1,4 @@
-export class Errors {
+export default class Errors {
 	public static errorListEl: HTMLElement | null = null
 	public static errEl: HTMLElement | null = null
 
