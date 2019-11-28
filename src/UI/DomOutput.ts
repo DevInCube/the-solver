@@ -1,4 +1,8 @@
-function matrixToTable(m) {
+import { Matrix } from "../Math/Matrix";
+import { Tableau, SimplexLog } from "../Math/Simplex";
+import { normalizedNumber } from "./Format";
+
+export function matrixToTable(m: Matrix) {
 	let digits = 3;
 	let table = document.createElement("table");
 	for (let i = 0; i < m.height; i++) {
@@ -7,7 +11,7 @@ function matrixToTable(m) {
 			let cell = document.createElement("td");
 			let val = m.items[i][j];
 			if (!isNaN(val)) {
-				cell.innerHTML = +parseFloat(Math.round(val * 1000) / 1000).toFixed(digits);
+				cell.innerHTML = normalizedNumber(val, digits);
 				cell.setAttribute("class", "num");
 			}
 			else
@@ -19,7 +23,7 @@ function matrixToTable(m) {
 	return table;
 };
 
-function tableauToTable(t) {
+export function tableauToTable(t: Tableau) {
     let rowShift = 2;
     let colShift = 4;
     let n = t.B.width + rowShift;
@@ -37,15 +41,15 @@ function tableauToTable(t) {
                 if (j === 2)
                     cell.innerHTML = "cB";
                 if (j < 3)
-                    cell.setAttribute("rowspan", 2);
+                    cell.setAttribute("rowspan", "2");
 
                 if (j === 3) {
                     cell.innerHTML = "c";
-                    cell.setAttribute("colspan", 2);
+                    cell.setAttribute("colspan", "2");
                 }
                 if (j === 4) continue;
                 if (j >= (colShift + 1)) {
-                    cell.innerHTML = t.C.items[0][j - (colShift + 1)];
+                    cell.innerHTML = normalizedNumber(t.C.items[0][j - (colShift + 1)]);
                     cell.setAttribute("class", "num");
                 }
             }
@@ -58,22 +62,21 @@ function tableauToTable(t) {
             }
             if (i >= rowShift) {
                 if (j === 0)
-                    cell.innerHTML = i + 1 - rowShift;
+                    cell.innerHTML = normalizedNumber(i + 1 - rowShift);
                 let bIndex = t.B.items[0][i - rowShift];
                 if (j === 1) {
-                    cell.innerHTML = bIndex;
+                    cell.innerHTML = normalizedNumber(bIndex);
                     cell.setAttribute("class", "num");
                 }
                 if (j === 2) {
-                    cell.innerHTML = t.C.items[0][bIndex - 1];
+                    cell.innerHTML = normalizedNumber(t.C.items[0][bIndex - 1]);
                     cell.setAttribute("class", "num");
                 }
                 if (j === 3)
                     cell.innerHTML = "x" + bIndex;
                 if (j >= colShift) {
                     let val = t.A.items[i - rowShift][j - colShift];
-                    val = +parseFloat(Math.round(val * 1000) / 1000).toFixed(3);
-                    cell.innerHTML = val;
+                    cell.innerHTML = normalizedNumber(val);
                     cell.setAttribute("class", "num");
                 }
             }
@@ -84,7 +87,7 @@ function tableauToTable(t) {
     return table;
 }
 
-function printSimplexLog(log, el) {
+export function printSimplexLog(log: SimplexLog, el: HTMLElement) {
     label(el, "=================================");
     let fn = "max f(x) = ";
     for (let i = 0; i < log.problem.width; i++) {
@@ -101,6 +104,7 @@ function printSimplexLog(log, el) {
             label(el, "=================================");
             label(el, "No negative elements.");
             label(el, "x* = ");
+            if (!iteration.x) throw new Error(`Invalid log: missing x`);
             el.appendChild(matrixToTable(iteration.x));
             let res = 0;
             for (let i = 0; i < iteration.table.C.width; i++)
@@ -109,6 +113,9 @@ function printSimplexLog(log, el) {
         }
         else {
             label(el, "deltas = ");
+            if (!iteration.deltas) throw new Error(`Invalid log: missing deltas`);
+            if (!iteration.gammasData) throw new Error(`Invalid log: missing gammasData`);
+
             el.appendChild(matrixToTable(iteration.deltas));
             if (!iteration.gammasData.hasMinusInRow) {
                 label(el, "=================================");
@@ -119,4 +126,11 @@ function printSimplexLog(log, el) {
             el.appendChild(matrixToTable(iteration.gammasData.gammas));
         }
     }
+}
+
+function label(el: HTMLElement, string: string) {
+    let lbl = document.createElement("label");
+    lbl.setAttribute("class", "log");
+    lbl.innerHTML = string;
+    el.appendChild(lbl);
 }

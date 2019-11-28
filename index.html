@@ -1,70 +1,76 @@
 <!DOCTYPE html>
 <html>
-	<head>
-		<meta charset="UTF-8">
-		<title>Simplex solver</title>		
-		<meta name="viewport" content="width=device-width, initial-scale=1" />
-		<link rel="stylesheet" type="text/css" href="css/app.css">
-	</head>
-	<body>
-		<div id="error">
-			<ul id="errorList"></ul>
-		</div>		
-		<div class="header">			
-			<div class="caption-big">Порєшатєль</div>
-			<div class="caption-small">П</div>
-			<div class="caption-method right">Simplex</div>
-		</div>	
-		<div class="body">
-			<div>
-				<div class="tip"> C-vector (separate numbers by comma): </div>
-				<textarea id="cInput" class="block" rows="1"></textarea>
-			</div>
-			<div>
-				<div class="tip"> Basis indexes: (start from 1) </div>
-				<textarea id="bInput" class="block" rows="1"></textarea>
-			</div>
-			<div>
-				<div class="tip"> Input matrix: (separate numbers by comma, lines by semicolon) </div>
-				<textarea id="input" class="block" rows="5"></textarea>
-			</div>
-			<div class="block"> 
-				<div class="tip"> Special element position: (start from 0)</div>
-				<textarea id="elEl" class="block" rows="1"></textarea>
-			</div>
-			<div class="block">
-				<button id="runBtn" disabled title="Transform the input matrix">Transform</button>
-				<button id="moveUpBtn" class="right" title="move matrix to the input">&uarr;&uarr;&uarr;</button>
-			</div>
-			<textarea id="output" class="block result" rows="5" readonly></textarea>
-			<div class="tip"> The new matrix output. </div>
-			<div class="block">
-				<button id="run2Btn" disabled >Deltas</button>	
-			</div>
-			<textarea id="deltaOutput" class="block result" rows="1" readonly></textarea>
-			<div class="tip"> Deltas. </div>
-			<div class="block">
-				<button id="runSimplex">Run Simplex</button>	
-			</div>
-			<div class="block">
-				<div id="testRes"></div>
-			</div>		
-			<div>
-				<a href="#" class="setTest" data-index="0">set test 1</a>
-				<a href="#" class="setTest" data-index="1">set test 2</a>
-				<a href="#" class="setTest" data-index="2">set test 3</a>
-			</div>
-		</div>		
-		<div class="footer">
-			<!---->
-		</div>
 
-		<script src="js/UI/Errors.js"></script>
-		<script src="js/UI/DomOutput.js"></script>
-		<script src="js/UI/Format.js"></script>
-		<script src="js/Math/Matrix.js"></script>
-		<script src="js/Math/Simplex.js"></script>
-		<script src="js/Test/Test.js"></script>
-		<script src="js/app.js"></script>
-	</body>
+<head>
+	<meta charset="UTF-8">
+	<title>Simplex solver</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1" />
+	<link rel="stylesheet" type="text/css" href="public/css/app.css">
+
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/systemjs/0.20.19/system.js"></script>
+	<script src="./public/system.config.js"></script>
+	<script src="./public/app.js"></script>
+	<script>
+		window.addEventListener('load', function (e) {
+			System
+				.import('main')
+				.then(null, console.error.bind(console));
+		});
+	</script>
+</head>
+
+<body>
+	<div id="error">
+		<ul id="errorList"></ul>
+	</div>
+	<div class="header">
+		<div class="caption-big">Порєшатєль</div>
+		<div class="caption-small">П</div>
+		<div class="caption-method right">Simplex</div>
+	</div>
+	<div class="body">
+		<div>
+			<a href="#" class="setTest" data-index="0">set test 1</a>
+			<a href="#" class="setTest" data-index="1">set test 2</a>
+			<a href="#" class="setTest" data-index="2">set test 3</a>
+		</div>
+		<div>
+			<div class="tip"> C-vector (separate numbers by comma): </div>
+			<textarea id="cInput" class="block" rows="1"></textarea>
+		</div>
+		<div>
+			<div class="tip"> Basis indexes: (start from 1) </div>
+			<textarea id="bInput" class="block" rows="1"></textarea>
+		</div>
+		<div>
+			<div class="tip"> Input matrix: (separate numbers by comma, lines by semicolon) </div>
+			<textarea id="input" class="block" rows="5"></textarea>
+		</div>
+		<div class="block">
+			<div class="tip"> Special element position: (start from 0)</div>
+			<textarea id="elEl" class="block" rows="1"></textarea>
+		</div>
+		<div class="block">
+			<button id="runBtn" disabled title="Transform the input matrix">Transform</button>
+			<button id="moveUpBtn" class="right" title="move matrix to the input">&uarr;&uarr;&uarr;</button>
+		</div>
+		<textarea id="output" class="block result" rows="5" readonly></textarea>
+		<div class="tip"> The new matrix output. </div>
+		<div class="block">
+			<button id="run2Btn" disabled>Deltas</button>
+		</div>
+		<textarea id="deltaOutput" class="block result" rows="1" readonly></textarea>
+		<div class="tip"> Deltas. </div>
+		<div class="block">
+			<button id="runSimplex">Run Simplex</button>
+		</div>
+		<div class="block">
+			<div id="testRes"></div>
+		</div>
+	</div>
+	<div class="footer">
+		<!---->
+	</div>
+</body>
+
 </html>

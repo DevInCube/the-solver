@@ -1,4 +1,8 @@
-const testData = [
+import { Tableau, doSimplex } from "../Math/Simplex";
+import { printSimplexLog } from "../UI/DomOutput";
+import { parseMatrix } from "../UI/Format";
+
+export const testData = [
 	{
 		AString: `31,32,82,41,1,0,0;
 -6,-8,-1,91,0,1,0;
@@ -24,24 +28,12 @@ const testData = [
 	}
 ]
 
-function setTestData(index = 0) {
-	matrixInputEl.value = testData[index].AString
-	cInputEl.value = testData[index].CString
-	bInputEl.value = testData[index].BString
-	elEl.value = "0,0";
-	//
-	cInputEl.dispatchEvent(new Event('keyup'));
-	bInputEl.dispatchEvent(new Event('keyup'));
-	matrixInputEl.dispatchEvent(new Event('keyup'));
-	elEl.dispatchEvent(new Event('keyup'));
-}
-
-function testSimplex(index = 0) {
+export function testSimplex(index = 0) {
 	let A = parseMatrix(testData[index].AString)
 	let b = parseMatrix(testData[index].BString)
 	let c = parseMatrix(testData[index].CString)
-	let table = new SimplexTable(A, b, c)
+	let table = new Tableau(A, b, c)
 	let log = doSimplex(table)
-	let resEl = document.getElementById("testRes")
+	let resEl = document.getElementById("testRes") as HTMLDivElement
 	printSimplexLog(log, resEl)
 }

@@ -1,17 +1,23 @@
-let errorListEl;
-let errEl;
-let matrixInputEl;
-let matrixOutputEl;
-let elEl;
-let cInputEl;
-let bInputEl;
-let deltaOutputEl;
-let runEl;
-let runDeltasEl;
-let basisRowsEl;
+console.log('loaded;');
+
+import { testData } from "./Test/Test";
+import { doSimplex, Tableau, transform, getDeltas } from "./Math/Simplex";
+import { Errors } from "./UI/Errors";
+import { Matrix } from "./Math/Matrix";
+import { printSimplexLog } from "./UI/DomOutput";
+import { parseMatrix, formatMatrix } from "./UI/Format";
+
+let matrixInputEl: HTMLTextAreaElement;
+let matrixOutputEl: HTMLTextAreaElement;
+let elEl: HTMLTextAreaElement;
+let cInputEl: HTMLTextAreaElement;
+let bInputEl: HTMLTextAreaElement;
+let deltaOutputEl: HTMLTextAreaElement;
+let runEl: HTMLButtonElement;
+let runDeltasEl: HTMLButtonElement;
 
 let modelProxyHandler = {
-    set: function (target, propKey, propValue) {
+    set: function (target: any, propKey: string, propValue: any) {
         if (["AString", "BString", "CString", "EString"].includes(propKey)) {
             const matrix = parseMatrix(propValue)
             model[propKey.charAt(0)] = matrix
@@ -60,47 +66,42 @@ let model = new Proxy({
     E: new Matrix()
 }, modelProxyHandler);
 
-window.onload = function () {
-    bindMobileHardwareBtn();
-    Errors.init();
-    errEl = document.getElementById("error");
-    errorListEl = document.getElementById("errorList");
-    matrixInputEl = document.getElementById("input");
-    matrixInputEl.addEventListener('keyup', inputChanged)
-    matrixOutputEl = document.getElementById("output");
-    elEl = document.getElementById("elEl");
-    elEl.addEventListener('keyup', e => eInputChanged(e.target))
-    cInputEl = document.getElementById("cInput");
-    cInputEl.addEventListener('keyup', e => cInputChanged(e.target))
-    bInputEl = document.getElementById("bInput");
-    bInputEl.addEventListener('keyup', e => bInputChanged(e.target))
-    deltaOutputEl = document.getElementById("deltaOutput");
-    runEl = document.getElementById("runBtn");
-    runEl.addEventListener('click', e => mathRun())
-    runDeltasEl = document.getElementById("run2Btn");
-    runDeltasEl.addEventListener('click', e => printDeltas())
-    basisRowsEl = document.getElementById("basisRows");
-    //
-    let runSimplexBtn = document.getElementById("runSimplex")
-    runSimplexBtn.addEventListener("click", e => runSimplex('cInput', 'bInput', 'input', 'testRes'))
-    //
-    let moveUpEl = document.getElementById("moveUpBtn")
-    moveUpEl.addEventListener('click', e => moveUp())
-    let setTestEls = document.getElementsByClassName("setTest")
-    for (let setTestEl of setTestEls)
-        setTestEl.addEventListener("click", e => setTestData(Number(e.target.getAttribute("data-index"))))
-    //
-    cInputEl.dispatchEvent(new Event('keyup'));
-    bInputEl.dispatchEvent(new Event('keyup'));
-    matrixInputEl.dispatchEvent(new Event('keyup'));
-    elEl.dispatchEvent(new Event('keyup'));
-    //
-    console.log('loaded;');
-}
-
+console.log('DOM fully loaded and parsed');
+bindMobileHardwareBtn();
+Errors.init();
+matrixInputEl = document.getElementById("input") as HTMLTextAreaElement;
+matrixInputEl.addEventListener('keyup', inputChanged)
+matrixOutputEl = document.getElementById("output") as HTMLTextAreaElement;
+elEl = document.getElementById("elEl") as HTMLTextAreaElement;
+elEl.addEventListener('keyup', e => eInputChanged(e.target as HTMLTextAreaElement))
+cInputEl = document.getElementById("cInput") as HTMLTextAreaElement;
+cInputEl.addEventListener('keyup', e => cInputChanged(e.target as HTMLTextAreaElement))
+bInputEl = document.getElementById("bInput") as HTMLTextAreaElement;
+bInputEl.addEventListener('keyup', e => bInputChanged(e.target as HTMLTextAreaElement))
+deltaOutputEl = document.getElementById("deltaOutput") as HTMLTextAreaElement;
+runEl = document.getElementById("runBtn") as HTMLButtonElement;
+runEl.addEventListener('click', e => mathRun())
+runDeltasEl = document.getElementById("run2Btn") as HTMLButtonElement;
+runDeltasEl.addEventListener('click', e => printDeltas())
+//
+let runSimplexBtn = document.getElementById("runSimplex") as HTMLButtonElement;
+runSimplexBtn.addEventListener("click", e => runSimplex('cInput', 'bInput', 'input', 'testRes'))
+//
+let moveUpEl = document.getElementById("moveUpBtn") as HTMLButtonElement;
+moveUpEl.addEventListener('click', e => moveUp())
+let setTestEls = document.getElementsByClassName("setTest")
+for (let setTestEl of setTestEls)
+    setTestEl.addEventListener("click", e => setTestData(Number((e.target as HTMLAnchorElement).getAttribute("data-index"))))
+//
+cInputEl.dispatchEvent(new Event('keyup'));
+bInputEl.dispatchEvent(new Event('keyup'));
+matrixInputEl.dispatchEvent(new Event('keyup'));
+elEl.dispatchEvent(new Event('keyup'));
+//
+console.log('inited;');
 //matrix input
-function inputChanged(ev) {
-    const el = ev.target
+function inputChanged(ev: KeyboardEvent) {
+    const el = ev.target as HTMLTextAreaElement
     let matStr = el.value;
     // add auto newline
     if (ev.key === ";") {
@@ -110,15 +111,15 @@ function inputChanged(ev) {
     model.AString = matStr;
 }
 //C-vector input
-function cInputChanged(el) {
+function cInputChanged(el: HTMLTextAreaElement) {
     model.CString = el.value
 }
 //B-vector input
-function bInputChanged(el) {
+function bInputChanged(el: HTMLTextAreaElement) {
     model.BString = el.value
 }
 //E-vector input
-function eInputChanged(el) {
+function eInputChanged(el: HTMLTextAreaElement) {
     model.EString = el.value
 }
 
@@ -130,14 +131,14 @@ function mathRun() {
 }
 
 function printDeltas() {
-    let deltas = getDeltas(new SimplexTable(model.A, model.B, model.C));
+    let deltas = getDeltas(new Tableau(model.A, model.B, model.C));
     deltaOutputEl.value = deltas.items[0].reduce((a, delta) => a += delta + ", ", "");
 }
 
 function moveUp() {
     matrixInputEl.value = matrixOutputEl.value;
     matrixOutputEl.value = "";
-    inputChanged(matrixInputEl);
+    // inputChanged(matrixInputEl); // @todo
 }
 
 function bindMobileHardwareBtn() {
@@ -151,17 +152,17 @@ function bindMobileHardwareBtn() {
     });
 }
 
-function getSimplexTable(cIn, bIn, aIn) {
-    let cEl = document.getElementById(cIn);
-    let bEl = document.getElementById(bIn);
-    let aEl = document.getElementById(aIn);
+function getSimplexTable(cIn: string, bIn: string, aIn: string) {
+    let cEl = document.getElementById(cIn) as HTMLTextAreaElement;
+    let bEl = document.getElementById(bIn) as HTMLTextAreaElement;
+    let aEl = document.getElementById(aIn) as HTMLTextAreaElement;
     let A = parseMatrix(aEl.value);
     let b = parseMatrix(bEl.value);
     let c = parseMatrix(cEl.value);
-    return new SimplexTable(A, b, c);
+    return new Tableau(A, b, c);
 }
 
-function checkSimplexTable(table) {
+function checkSimplexTable(table: Tableau) {
     Errors.init()
     Errors.check(function () {
         if (!table.A.valid) Errors.add("A is invalid")
@@ -179,8 +180,8 @@ function checkSimplexTable(table) {
     });
 }
 
-function runSimplex(cIn, bIn, aIn, out) {
-    let outEl = document.getElementById(out);
+function runSimplex(cIn: string, bIn: string, aIn: string, out: string) {
+    let outEl = document.getElementById(out) as HTMLDivElement;
     let table = getSimplexTable(cIn, bIn, aIn)
     outEl.innerHTML = "";
     checkSimplexTable(table);
@@ -190,9 +191,17 @@ function runSimplex(cIn, bIn, aIn, out) {
     }
 }
 
-function label(el, string) {
-    let lbl = document.createElement("label");
-    lbl.setAttribute("class", "log");
-    lbl.innerHTML = string;
-    el.appendChild(lbl);
+
+
+// test
+function setTestData(index = 0) {
+    matrixInputEl.value = testData[index].AString
+    cInputEl.value = testData[index].CString
+    bInputEl.value = testData[index].BString
+    elEl.value = "0,0";
+    //
+    cInputEl.dispatchEvent(new Event('keyup'));
+    bInputEl.dispatchEvent(new Event('keyup'));
+    matrixInputEl.dispatchEvent(new Event('keyup'));
+    elEl.dispatchEvent(new Event('keyup'));
 }

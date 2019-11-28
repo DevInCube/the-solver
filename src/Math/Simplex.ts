@@ -1,19 +1,41 @@
-function SimplexTable(A, b, c) {
+import { Matrix, createArray } from './Matrix'
 
-	this.A = A;
-	this.B = b;
-	this.C = c;
+export class Tableau {
+	// A - matrix
+	// b - basis index vector
+	// c - vector
+	constructor(
+		public A: Matrix,
+		public B: Matrix,
+		public C: Matrix) {
+
+	}
+
+	public clone() {
+		return new Tableau(this.A.clone(), this.B.clone(), this.C.clone())
+	}
 }
 
-SimplexTable.prototype.clone = function () {
-	return new SimplexTable(this.A.clone(), this.B.clone(), this.C.clone())
+export interface GammasData {
+	gammas: Matrix
+	minGammaIndex: number
+	hasMinusInRow: boolean
 }
 
-// A - matrix
-// b - basis index vector
-// c - vector
-// log - string
-function doSimplex(table) {
+export interface SimplexLogIteration {
+	table: Tableau
+	minusRowIndex?: number
+	x?: Matrix
+	deltas?: Matrix
+	gammasData?: GammasData
+}
+
+export interface SimplexLog {
+	problem: Matrix
+	iterations: SimplexLogIteration[]
+}
+
+export function doSimplex(table: Tableau): SimplexLog {
 	return {
 		problem: table.C.clone(),
 		iterations: doIterations(),
@@ -22,14 +44,14 @@ function doSimplex(table) {
 	function doIterations() {
 		let iterations = [];
 		while (true) {
-			let iteration = {
+			let iteration = <SimplexLogIteration>{
 				table: table.clone(),
 			};
 			iterations.push(iteration);
 			let minusRowIndex = firstNegativeRowIndex(table);
 			iteration.minusRowIndex = minusRowIndex;
 			if (minusRowIndex === -1) {
-				let x = createMatrix([Array(table.C.width).fill(0)])
+				let x = new Matrix([Array(table.C.width).fill(0)])
 				for (let i = 0; i < table.B.width; i++) {
 					let index = table.B.items[0][i];
 					x.items[0][index - 1] = table.A.items[i][0];
@@ -52,13 +74,13 @@ function doSimplex(table) {
 					break; // stop, can't be solved.
 				}
 				table.A = transform(table.A, minusRowIndex, gammasData.minGammaIndex);
-				table.B.items[0][gammasData.minusRowIndex] = gammasData.minGammaIndex;
+				table.B.items[0][minusRowIndex] = gammasData.minGammaIndex;
 			}
 		}
 		return iterations;
 	}
 
-	function firstNegativeRowIndex(table) {
+	function firstNegativeRowIndex(table: Tableau) {
 		for (let i = 0; i < table.A.height; i++) {
 			if (table.A.items[i][0] < 0) {
 				return i
@@ -69,7 +91,7 @@ function doSimplex(table) {
 }
 
 // m - Matrix, pi, pj - int
-function transform(m, pi, pj) {
+export function transform(m: Matrix, pi: number, pj: number) {
 	if (!m.valid) throw new Error(`transform: invalid matrix`)
 	if (typeof pi !== 'number' || typeof pj !== 'number')
 		throw new Error(`transform: indexes should be numbers`)
@@ -77,7 +99,7 @@ function transform(m, pi, pj) {
 	if (pj < 0 || pj >= m.width) throw new Error(`transform: invalid column index ${pj}`)
 	//
 	let El = m.items[pi][pj]; // special element value
-	let res = createMatrix(createArray(m.height, m.width));
+	let res = new Matrix(createArray(m.height, m.width));
 	for (let i = 0; i < m.height; i++) {
 		for (let j = 0; j < m.width; j++) {
 			if (i === pi) {
@@ -92,7 +114,7 @@ function transform(m, pi, pj) {
 	return res;
 }
 
-function getGammasData(table, minusRowIndex, deltas) {
+export function getGammasData(table: Tableau, minusRowIndex: number, deltas: Matrix) {
 	let gammas = new Matrix([Array(table.C.width)]);
 	let minGamma = Infinity;
 	let minGammaIndex = -1;
@@ -118,7 +140,7 @@ function getGammasData(table, minusRowIndex, deltas) {
 	}
 }
 
-function getDeltas(table) {
+export function getDeltas(table: Tableau) {
 	let deltas = new Matrix([Array(table.C.width)]);
 	for (let j = 0; j < table.C.width; j++) {
 		let delta = 0;

@@ -1,0 +1,24 @@
+{
+  "name": "the-solver",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "cbuild": "tsc",
+    "start": "http-server . -p 45892 -c-1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/DevInCube/the-solver.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/DevInCube/the-solver/issues"
+  },
+  "homepage": "https://github.com/DevInCube/the-solver#readme",
+  "devDependencies": {
+    "http-server": "^0.12.0"
+  }
+}
