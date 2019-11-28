@@ -20,28 +20,28 @@ let modelProxyHandler = {
         console.log('proxy set;')
         runEl.disabled = !(model.A.valid && model.E.valid);
         runDeltasEl.disabled = !(model.A.valid && model.B.valid && model.C.valid);
-        checkBegin();
-        if (!model.A.valid) addError("invalid matrix (A)");
-        if (model.A.valid) {
-            if (model.C.width !== model.A.width - 1)
-                addError(`c.length (${model.C.width}) != matrix.width - 1 (${model.A.width - 1})`);
-            if (model.B.width !== model.A.height)
-                addError(`basis length (${model.B.width}) != matrix height (${model.A.height})`);
-            for (let i = 0; i < model.B.width; i++) {
-                let bi = model.B.items[i];
-                if (bi < 0 || bi > model.C.width)
-                    addError("invalid basis element: " + bi);
+        Errors.check(() => {
+            if (!model.A.valid) Errors.add("invalid matrix (A)");
+            if (model.A.valid) {
+                if (model.C.width !== model.A.width - 1)
+                    Errors.add(`c.length (${model.C.width}) != matrix.width - 1 (${model.A.width - 1})`);
+                if (model.B.width !== model.A.height)
+                    Errors.add(`basis length (${model.B.width}) != matrix height (${model.A.height})`);
+                for (let i = 0; i < model.B.width; i++) {
+                    let bi = model.B.items[i];
+                    if (bi < 0 || bi > model.C.width)
+                        Errors.add("invalid basis element: " + bi);
+                }
+                if (model.E.width < 2)
+                    Errors.add("position should have 2 values");
+                if (model.E.valid && model.E.width >= 2) {
+                    if (model.E.items[0][0] > model.A.height - 1)
+                        Errors.add("invalid l element position: " + model.E.items[0][0]);
+                    if (model.E.items[0][1] > model.A.width - 1)
+                        Errors.add("invalid r element position: " + model.E.items[0][1]);
+                }
             }
-            if (model.E.width < 2)
-                addError("position should have 2 values");
-            if (model.E.valid && model.E.width >= 2) {
-                if (model.E.items[0][0] > model.A.height - 1)
-                    addError("invalid l element position: " + model.E.items[0][0]);
-                if (model.E.items[0][1] > model.A.width - 1)
-                    addError("invalid r element position: " + model.E.items[0][1]);
-            }
-        }
-        checkEnd();
+        })
         //
         target[propKey] = propValue;
         return true;
@@ -62,6 +62,7 @@ let model = new Proxy({
 
 window.onload = function () {
     bindMobileHardwareBtn();
+    Errors.init();
     errEl = document.getElementById("error");
     errorListEl = document.getElementById("errorList");
     matrixInputEl = document.getElementById("input");
@@ -95,15 +96,6 @@ window.onload = function () {
     elEl.dispatchEvent(new Event('keyup'));
     //
     console.log('loaded;');
-}
-
-function checkBegin() {
-    while (errorListEl.children.length > 0)
-        errorListEl.removeChild(errorListEl.lastChild);
-}
-
-function checkEnd() {
-    errEl.style.opacity = (errorListEl.children.length === 0) ? 0 : 0.9;
 }
 
 //matrix input
@@ -196,14 +188,6 @@ function runSimplex(cIn, bIn, aIn, out) {
         let log = doSimplex(table)
         printSimplexLog(log, outEl)
     }
-}
-
-// DOM
-
-function addError(msg) {
-    let item = document.createElement("li");
-    item.innerHTML = msg;
-    errorListEl.appendChild(item);
 }
 
 function label(el, string) {
