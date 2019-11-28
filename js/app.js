@@ -80,6 +80,9 @@ window.onload = function () {
     runDeltasEl.addEventListener('click', e => printDeltas())
     basisRowsEl = document.getElementById("basisRows");
     //
+    let runSimplexBtn = document.getElementById("runSimplex")
+    runSimplexBtn.addEventListener("click", e => runSimplex('cInput','bInput','input','testRes'))
+    //
     let moveUpEl = document.getElementById("moveUpBtn")
     moveUpEl.addEventListener('click', e => moveUp())
     let setTestEls = document.getElementsByClassName("setTest")

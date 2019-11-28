@@ -35,7 +35,7 @@
 	}
 	
 	error.checkEnd = function(){
-		error.errEl.style.opacity = (error.errorListEl.children.length == 0) ? 0 : 0.9;
+		error.errEl.style.opacity = (error.errorListEl.children.length === 0) ? 0 : 0.9;
 	}
 	
 	error.check = function(innerFunction){	

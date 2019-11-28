@@ -17,6 +17,9 @@ button { padding: 0px 20px 0px 20px; }
 	display: none;
 	color: white; margin: 10px; font-size: 200%; font-weight: bold;  
 }
+.caption-method {
+	color: white; margin: 10px; font-size: 200%; font-weight: bold;  
+}
 .footer { 
 	width: 100%; background-color: steelblue; height: 20px; 
 }

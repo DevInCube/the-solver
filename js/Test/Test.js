@@ -28,6 +28,7 @@ function setTestData(index = 0) {
 	matrixInputEl.value = testData[index].AString
 	cInputEl.value = testData[index].CString
 	bInputEl.value = testData[index].BString
+	elEl.value = "0,0";
 	//
 	cInputEl.dispatchEvent(new Event('keyup'));
 	bInputEl.dispatchEvent(new Event('keyup'));
