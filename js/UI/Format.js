@@ -9,7 +9,7 @@ function parseMatrix(str) {
 		let arr = JSON.parse(str);
 		return createMatrix(arr);
 	}
-	catch (err) {  
+	catch (err) {
 		// custom format
 		let lines = str.match(/[^\r\n]+/g).filter(x => !isBlank(x));
 		console.log(lines)
@@ -18,6 +18,7 @@ function parseMatrix(str) {
 		let matrix = new Array(height);
 		for (let i = 0; i < height; i++) {
 			let items = lines[i].match(/[+\-0-9\.]+/g);
+			if (!items) throw new Error(`Invalid matrix:\n${str}`)
 			let thisWidth = items.length;
 			if (width === -1) width = thisWidth;
 			else if (width !== thisWidth) {
@@ -25,7 +26,7 @@ function parseMatrix(str) {
 			}
 			matrix[i] = new Array(width);
 			for (let j = 0; j < width; j++) {
-				matrix[i][j] = items[j];
+				matrix[i][j] = Number(items[j]);
 			}
 		}
 		m.width = width;
@@ -38,5 +39,24 @@ function parseMatrix(str) {
 		function isBlank(str) {
 			return (!str || /^\s*$/.test(str));
 		}
+	}
+}
+
+function formatMatrix(m, digits = 3) {
+	let norm = normalizeMatrixOutput(m, digits)
+	return norm.map(row => row.join(' , ')).join(';\n');
+
+	function normalizeMatrixOutput(matrix, digits) {
+		let copy = createArray(matrix.height, matrix.width);
+		for (let i = 0; i < matrix.height; i++) {
+			for (let j = 0; j < matrix.width; j++) {
+				let num = Number(matrix.items[i][j])
+				let fixed = num.toFixed(digits)
+				num = Number(fixed);
+				let item = (num !== 0 && (num - Math.trunc(num)) !== 0) ? fixed : num.toFixed(0);
+				copy[i][j] = item;
+			}
+		}
+		return copy;
 	}
 }
