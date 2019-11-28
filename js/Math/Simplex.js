@@ -5,8 +5,7 @@ function SimplexTable(A, b, c) {
 	this.C = c;
 }
 
-SimplexTable.prototype.clone = function ()
-{
+SimplexTable.prototype.clone = function () {
 	return new SimplexTable(this.A.clone(), this.B.clone(), this.C.clone())
 }
 
@@ -72,7 +71,7 @@ function doSimplex(table) {
 // m - Matrix, pi, pj - int
 function transform(m, pi, pj) {
 	if (!m.valid) throw new Error(`transform: invalid matrix`)
-	if (typeof pi !== 'number' || typeof pj !== 'number') 
+	if (typeof pi !== 'number' || typeof pj !== 'number')
 		throw new Error(`transform: indexes should be numbers`)
 	if (pi < 0 || pi >= m.height) throw new Error(`transform: invalid row index ${pi}`)
 	if (pj < 0 || pj >= m.width) throw new Error(`transform: invalid column index ${pj}`)

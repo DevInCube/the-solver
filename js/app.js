@@ -65,7 +65,7 @@ window.onload = function () {
     errEl = document.getElementById("error");
     errorListEl = document.getElementById("errorList");
     matrixInputEl = document.getElementById("input");
-    matrixInputEl.addEventListener('keyup', e => inputChanged(e.target))
+    matrixInputEl.addEventListener('keyup', inputChanged)
     matrixOutputEl = document.getElementById("output");
     elEl = document.getElementById("elEl");
     elEl.addEventListener('keyup', e => eInputChanged(e.target))
@@ -81,7 +81,7 @@ window.onload = function () {
     basisRowsEl = document.getElementById("basisRows");
     //
     let runSimplexBtn = document.getElementById("runSimplex")
-    runSimplexBtn.addEventListener("click", e => runSimplex('cInput','bInput','input','testRes'))
+    runSimplexBtn.addEventListener("click", e => runSimplex('cInput', 'bInput', 'input', 'testRes'))
     //
     let moveUpEl = document.getElementById("moveUpBtn")
     moveUpEl.addEventListener('click', e => moveUp())
@@ -107,10 +107,11 @@ function checkEnd() {
 }
 
 //matrix input
-function inputChanged(el) {
+function inputChanged(ev) {
+    const el = ev.target
     let matStr = el.value;
     // add auto newline
-    if (matStr.slice(-1) === ";") {
+    if (ev.key === ";") {
         el.value += "\r\n";
         matStr = el.value;
     }
@@ -169,18 +170,18 @@ function getSimplexTable(cIn, bIn, aIn) {
 }
 
 function checkSimplexTable(table) {
-    Error.init()
-    Error.check(function () {
-        if (!table.A.valid) Error.add("A is invalid")
-        if (!table.B.valid) Error.add("B is invalid")
-        if (!table.C.valid) Error.add("C is invalid")
+    Errors.init()
+    Errors.check(function () {
+        if (!table.A.valid) Errors.add("A is invalid")
+        if (!table.B.valid) Errors.add("B is invalid")
+        if (!table.C.valid) Errors.add("C is invalid")
         if (table.B.width !== table.A.height)
-            Error.add(`B length (${table.B.width}) != A height (${table.A.height})`)
-        if (table.C.width !== table.A.width - 1) 
-            Error.add(`C length ${table.C.width} != A.width - 1 (${table.A.width - 1})`)
+            Errors.add(`B length (${table.B.width}) != A height (${table.A.height})`)
+        if (table.C.width !== table.A.width - 1)
+            Errors.add(`C length ${table.C.width} != A.width - 1 (${table.A.width - 1})`)
         for (let i = 0; i < table.B.width; i++)
             if ((table.B.items[0][i] - 1) >= table.C.width) {
-                Error.add(`B element {${table.B.items[0][i]}} is greater than C length (${table.C.width})`)
+                Errors.add(`B element {${table.B.items[0][i]}} is greater than C length (${table.C.width})`)
                 break
             }
     });
@@ -191,8 +192,7 @@ function runSimplex(cIn, bIn, aIn, out) {
     let table = getSimplexTable(cIn, bIn, aIn)
     outEl.innerHTML = "";
     checkSimplexTable(table);
-    if (!Error.hasErrors())
-    {
+    if (!Errors.hasErrors()) {
         let log = doSimplex(table)
         printSimplexLog(log, outEl)
     }
