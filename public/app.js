@@ -98,6 +98,8 @@ System.register("Math/Simplex", ["Math/Matrix"], function (exports_2, context_2)
             throw new Error(`transform: invalid column index ${pj}`);
         //
         let El = m.items[pi][pj]; // special element value
+        if (El === 0)
+            throw new Error(`transform: special element can not have zero value`);
         let res = Matrix_1.default.create(m.height, m.width);
         for (let i = 0; i < m.height; i++) {
             for (let j = 0; j < m.width; j++) {
@@ -668,10 +670,14 @@ System.register("main", ["Test/Test", "Math/Simplex", "UI/Errors", "Math/Matrix"
                             if (model.E.width < 2)
                                 Errors_1.default.add("position should have 2 values");
                             if (model.E.valid && model.E.width >= 2) {
-                                if (model.E.items[0][0] > model.A.height - 1)
-                                    Errors_1.default.add("invalid l element position: " + model.E.items[0][0]);
-                                if (model.E.items[0][1] > model.A.width - 1)
-                                    Errors_1.default.add("invalid r element position: " + model.E.items[0][1]);
+                                let pi = model.E.items[0][0];
+                                let pj = model.E.items[0][1];
+                                if (pi > model.A.height - 1)
+                                    Errors_1.default.add("invalid l element position: " + pi);
+                                if (pj > model.A.width - 1)
+                                    Errors_1.default.add("invalid r element position: " + pj);
+                                if (model.A.items[pi][pj] === 0)
+                                    Errors_1.default.add("element at position l r can not be zero");
                             }
                         }
                     });

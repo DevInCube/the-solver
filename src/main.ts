@@ -41,10 +41,14 @@ let modelProxyHandler = {
                 if (model.E.width < 2)
                     Errors.add("position should have 2 values");
                 if (model.E.valid && model.E.width >= 2) {
-                    if (model.E.items[0][0] > model.A.height - 1)
-                        Errors.add("invalid l element position: " + model.E.items[0][0]);
-                    if (model.E.items[0][1] > model.A.width - 1)
-                        Errors.add("invalid r element position: " + model.E.items[0][1]);
+                    let pi = model.E.items[0][0]
+                    let pj = model.E.items[0][1]
+                    if (pi > model.A.height - 1)
+                        Errors.add("invalid l element position: " + pi);
+                    if (pj > model.A.width - 1)
+                        Errors.add("invalid r element position: " + pj);
+                    if (model.A.items[pi][pj] === 0)
+                        Errors.add("element at position l r can not be zero")
                 }
             }
         })

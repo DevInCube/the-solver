@@ -92,11 +92,16 @@ export function doSimplex(table: Tableau): SimplexLog {
 
 // m - Matrix, pi, pj - int
 export function transform(m: Matrix, pi: number, pj: number): Matrix {
-	if (!m.valid) throw new Error(`transform: invalid matrix`)
-	if (pi < 0 || pi >= m.height) throw new Error(`transform: invalid row index ${pi}`)
-	if (pj < 0 || pj >= m.width) throw new Error(`transform: invalid column index ${pj}`)
+	if (!m.valid) 
+		throw new Error(`transform: invalid matrix`)
+	if (pi < 0 || pi >= m.height) 
+		throw new Error(`transform: invalid row index ${pi}`)
+	if (pj < 0 || pj >= m.width) 
+		throw new Error(`transform: invalid column index ${pj}`)
 	//
 	let El = m.items[pi][pj]; // special element value
+	if (El === 0) 
+		throw new Error(`transform: special element can not have zero value`)
 	let res = Matrix.create(m.height, m.width);
 	for (let i = 0; i < m.height; i++) {
 		for (let j = 0; j < m.width; j++) {
