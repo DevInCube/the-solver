@@ -1,4 +1,4 @@
-import { Tableau, doDualSimplex } from "../Math/Simplex";
+import { Tableau } from "../Math/Simplex";
 import { printSimplexLog } from "../UI/DomOutput";
 import { parseMatrix } from "../UI/Format";
 
@@ -51,13 +51,3 @@ export const testData = [
 58,56,40,67,11,0,0,1 `,
 	},
 ]
-
-export function testSimplex(index = 0) {
-	let A = parseMatrix(testData[index].AString)
-	let b = parseMatrix(testData[index].BString)
-	let c = parseMatrix(testData[index].CString)
-	let table = new Tableau(A, b, c)
-	let log = doDualSimplex(table)
-	let resEl = document.getElementById("testRes") as HTMLDivElement
-	printSimplexLog(log, resEl)
-}

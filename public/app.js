@@ -493,31 +493,11 @@ System.register("UI/DomOutput", ["Math/Matrix", "UI/Format"], function (exports_
         }
     };
 });
-System.register("Test/Test", ["Math/Simplex", "UI/DomOutput", "UI/Format"], function (exports_5, context_5) {
-    var Simplex_1, DomOutput_1, Format_2, testData;
+System.register("Test/Test", [], function (exports_5, context_5) {
+    var testData;
     var __moduleName = context_5 && context_5.id;
-    function testSimplex(index = 0) {
-        let A = Format_2.parseMatrix(testData[index].AString);
-        let b = Format_2.parseMatrix(testData[index].BString);
-        let c = Format_2.parseMatrix(testData[index].CString);
-        let table = new Simplex_1.Tableau(A, b, c);
-        let log = Simplex_1.doDualSimplex(table);
-        let resEl = document.getElementById("testRes");
-        DomOutput_1.printSimplexLog(log, resEl);
-    }
-    exports_5("testSimplex", testSimplex);
     return {
-        setters: [
-            function (Simplex_1_1) {
-                Simplex_1 = Simplex_1_1;
-            },
-            function (DomOutput_1_1) {
-                DomOutput_1 = DomOutput_1_1;
-            },
-            function (Format_2_1) {
-                Format_2 = Format_2_1;
-            }
-        ],
+        setters: [],
         execute: function () {
             exports_5("testData", testData = [
                 {
@@ -628,7 +608,7 @@ System.register("UI/Errors", [], function (exports_6, context_6) {
     };
 });
 System.register("main", ["Test/Test", "Math/Simplex", "UI/Errors", "Math/Matrix", "UI/DomOutput", "UI/Format"], function (exports_7, context_7) {
-    var Test_1, Simplex_2, Errors_1, Matrix_4, DomOutput_2, Format_3, matrixInputEl, matrixOutputEl, cInputEl, bInputEl, modelProxyHandler, model, runSimplexBtn, setTestEls;
+    var Test_1, Simplex_1, Errors_1, Matrix_4, DomOutput_1, Format_2, matrixInputEl, matrixOutputEl, cInputEl, bInputEl, modelProxyHandler, model, runSimplexBtn, setTestEls;
     var __moduleName = context_7 && context_7.id;
     //matrix input
     function inputChanged(ev) {
@@ -662,10 +642,10 @@ System.register("main", ["Test/Test", "Math/Simplex", "UI/Errors", "Math/Matrix"
         let cEl = document.getElementById(cIn);
         let bEl = document.getElementById(bIn);
         let aEl = document.getElementById(aIn);
-        let A = Format_3.parseMatrix(aEl.value);
-        let b = Format_3.parseMatrix(bEl.value);
-        let c = Format_3.parseMatrix(cEl.value);
-        return new Simplex_2.Tableau(A, b, c);
+        let A = Format_2.parseMatrix(aEl.value);
+        let b = Format_2.parseMatrix(bEl.value);
+        let c = Format_2.parseMatrix(cEl.value);
+        return new Simplex_1.Tableau(A, b, c);
     }
     function checkSimplexTable(table) {
         Errors_1.default.init();
@@ -695,8 +675,8 @@ System.register("main", ["Test/Test", "Math/Simplex", "UI/Errors", "Math/Matrix"
         outEl.innerHTML = "";
         checkSimplexTable(table);
         if (!Errors_1.default.hasErrors()) {
-            let log = Simplex_2.doSimplex(new Simplex_2.Problem(type, table));
-            DomOutput_2.printSimplexLog(log, outEl);
+            let log = Simplex_1.doSimplex(new Simplex_1.Problem(type, table));
+            DomOutput_1.printSimplexLog(log, outEl);
         }
     }
     // test
@@ -714,8 +694,8 @@ System.register("main", ["Test/Test", "Math/Simplex", "UI/Errors", "Math/Matrix"
             function (Test_1_1) {
                 Test_1 = Test_1_1;
             },
-            function (Simplex_2_1) {
-                Simplex_2 = Simplex_2_1;
+            function (Simplex_1_1) {
+                Simplex_1 = Simplex_1_1;
             },
             function (Errors_1_1) {
                 Errors_1 = Errors_1_1;
@@ -723,11 +703,11 @@ System.register("main", ["Test/Test", "Math/Simplex", "UI/Errors", "Math/Matrix"
             function (Matrix_4_1) {
                 Matrix_4 = Matrix_4_1;
             },
-            function (DomOutput_2_1) {
-                DomOutput_2 = DomOutput_2_1;
+            function (DomOutput_1_1) {
+                DomOutput_1 = DomOutput_1_1;
             },
-            function (Format_3_1) {
-                Format_3 = Format_3_1;
+            function (Format_2_1) {
+                Format_2 = Format_2_1;
             }
         ],
         execute: function () {
@@ -735,7 +715,7 @@ System.register("main", ["Test/Test", "Math/Simplex", "UI/Errors", "Math/Matrix"
             modelProxyHandler = {
                 set: function (target, propKey, propValue) {
                     if (["AString", "BString", "CString", "EString"].includes(propKey)) {
-                        const matrix = Format_3.parseMatrix(propValue);
+                        const matrix = Format_2.parseMatrix(propValue);
                         model[propKey.charAt(0)] = matrix;
                         console.table(matrix.items);
                     }
