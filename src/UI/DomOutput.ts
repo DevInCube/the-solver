@@ -117,6 +117,9 @@ export function printSimplexLog(log: SimplexLog, el: HTMLElement): void {
         label(el, "----------------------------");
         label(el, "Iteration " + it + ":");
         el.appendChild(tableauWithDeltasAndPivotToTable(iteration.table, iteration.deltas, iteration.pivot));
+        if (iteration.comment) {
+            label(el, `Comment: ${iteration.comment}`);
+        }
         if (iteration.x && iteration.fx) {
             label(el, "x* = ");
             el.appendChild(matrixToTable(iteration.x));

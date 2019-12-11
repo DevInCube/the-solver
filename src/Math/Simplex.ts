@@ -38,10 +38,9 @@ export interface SimplexLogIteration {
 	deltas: Matrix
 	pivot: [number, number] | null
 	//
-	//minusRowIndex?: number
 	x?: Matrix
 	fx?: number
-	//gammasData?: GammasData
+	comment?: string
 }
 
 export interface SimplexLog {
@@ -91,6 +90,7 @@ export function doSimplex(problem: Problem): SimplexLog {
 			}
 			// if all positive or zero (max)
 			if (negativeIndexes.length === 0) {
+				iteration.comment = "all deltas are not negative";
 				let {x, fx} = getSolution(table);
 				iteration.x = x
 				iteration.fx = fx
@@ -116,6 +116,7 @@ export function doSimplex(problem: Problem): SimplexLog {
 			}
 			// if all negative or zero (min)
 			if (positiveIndexes.length === 0) {
+				iteration.comment = "all deltas are not positive";
 				let {x, fx} = getSolution(table);
 				iteration.x = x
 				iteration.fx = fx
@@ -153,13 +154,11 @@ export function doSimplex(problem: Problem): SimplexLog {
 		}
 		// This indicates that the problem is not limited and the solution will always be improved.
 		if (minDivRowIndex < 0) {
-			// @todo what?
+			iteration.comment = `The problem is not limited and the solution will always be improved.`;
 			break;
-			//throw new Error('maxDivRowIndex < 0')
 		}
-		// pivot element indexes
+		// pivot element row index
 		let pi = minDivRowIndex;
-		console.log(pi, pj)
 		iteration.pivot = [pi, pj];  // log
 		table.A = transform(table.A, pi, pj);
 		// change basis

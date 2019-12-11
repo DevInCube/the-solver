@@ -77,6 +77,7 @@ System.register("Math/Simplex", ["Math/Matrix"], function (exports_2, context_2)
                 }
                 // if all positive or zero (max)
                 if (negativeIndexes.length === 0) {
+                    iteration.comment = "all deltas are not negative";
                     let { x, fx } = getSolution(table);
                     iteration.x = x;
                     iteration.fx = fx;
@@ -103,6 +104,7 @@ System.register("Math/Simplex", ["Math/Matrix"], function (exports_2, context_2)
                 }
                 // if all negative or zero (min)
                 if (positiveIndexes.length === 0) {
+                    iteration.comment = "all deltas are not positive";
                     let { x, fx } = getSolution(table);
                     iteration.x = x;
                     iteration.fx = fx;
@@ -139,13 +141,11 @@ System.register("Math/Simplex", ["Math/Matrix"], function (exports_2, context_2)
             }
             // This indicates that the problem is not limited and the solution will always be improved.
             if (minDivRowIndex < 0) {
-                // @todo what?
+                iteration.comment = `The problem is not limited and the solution will always be improved.`;
                 break;
-                //throw new Error('maxDivRowIndex < 0')
             }
-            // pivot element indexes
+            // pivot element row index
             let pi = minDivRowIndex;
-            console.log(pi, pj);
             iteration.pivot = [pi, pj]; // log
             table.A = transform(table.A, pi, pj);
             // change basis
@@ -464,6 +464,9 @@ System.register("UI/DomOutput", ["Math/Matrix", "UI/Format"], function (exports_
             label(el, "----------------------------");
             label(el, "Iteration " + it + ":");
             el.appendChild(tableauWithDeltasAndPivotToTable(iteration.table, iteration.deltas, iteration.pivot));
+            if (iteration.comment) {
+                label(el, `Comment: ${iteration.comment}`);
+            }
             if (iteration.x && iteration.fx) {
                 label(el, "x* = ");
                 el.appendChild(matrixToTable(iteration.x));
