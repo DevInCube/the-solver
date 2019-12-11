@@ -628,7 +628,7 @@ System.register("UI/Errors", [], function (exports_6, context_6) {
     };
 });
 System.register("main", ["Test/Test", "Math/Simplex", "UI/Errors", "Math/Matrix", "UI/DomOutput", "UI/Format"], function (exports_7, context_7) {
-    var Test_1, Simplex_2, Errors_1, Matrix_4, DomOutput_2, Format_3, matrixInputEl, matrixOutputEl, elEl, cInputEl, bInputEl, deltaOutputEl, runEl, runDeltasEl, modelProxyHandler, model, runSimplexBtn, moveUpEl, setTestEls;
+    var Test_1, Simplex_2, Errors_1, Matrix_4, DomOutput_2, Format_3, matrixInputEl, matrixOutputEl, cInputEl, bInputEl, modelProxyHandler, model, runSimplexBtn, setTestEls;
     var __moduleName = context_7 && context_7.id;
     //matrix input
     function inputChanged(ev) {
@@ -648,25 +648,6 @@ System.register("main", ["Test/Test", "Math/Simplex", "UI/Errors", "Math/Matrix"
     //B-vector input
     function bInputChanged(el) {
         model.BString = el.value;
-    }
-    //E-vector input
-    function eInputChanged(el) {
-        model.EString = el.value;
-    }
-    function mathRun() {
-        let pi = model.E.items[0][0];
-        let pj = model.E.items[0][1];
-        let T = Simplex_2.transform(model.A, pi, pj);
-        matrixOutputEl.value = Format_3.formatMatrix(T);
-    }
-    function printDeltas() {
-        let deltas = Simplex_2.getDeltas(new Simplex_2.Tableau(model.A, model.B, model.C));
-        deltaOutputEl.value = deltas.items[0].reduce((a, delta) => a += `${delta.toFixed(3)}, `, "");
-    }
-    function moveUp() {
-        matrixInputEl.value = matrixOutputEl.value;
-        matrixOutputEl.value = "";
-        matrixInputEl.dispatchEvent(new Event('keyup'));
     }
     function bindMobileHardwareBtn() {
         document.addEventListener('keydown', function (e) {
@@ -723,12 +704,10 @@ System.register("main", ["Test/Test", "Math/Simplex", "UI/Errors", "Math/Matrix"
         matrixInputEl.value = Test_1.testData[index].AString;
         cInputEl.value = Test_1.testData[index].CString;
         bInputEl.value = Test_1.testData[index].BString;
-        elEl.value = "0,0";
         //
         cInputEl.dispatchEvent(new Event('keyup'));
         bInputEl.dispatchEvent(new Event('keyup'));
         matrixInputEl.dispatchEvent(new Event('keyup'));
-        elEl.dispatchEvent(new Event('keyup'));
     }
     return {
         setters: [
@@ -760,9 +739,6 @@ System.register("main", ["Test/Test", "Math/Simplex", "UI/Errors", "Math/Matrix"
                         model[propKey.charAt(0)] = matrix;
                         console.table(matrix.items);
                     }
-                    console.log('proxy set;');
-                    runEl.disabled = !(model.A.valid && model.E.valid);
-                    runDeltasEl.disabled = !(model.A.valid && model.B.valid && model.C.valid);
                     Errors_1.default.check(() => {
                         if (!model.A.valid)
                             Errors_1.default.add("invalid matrix (A)");
@@ -776,18 +752,6 @@ System.register("main", ["Test/Test", "Math/Simplex", "UI/Errors", "Math/Matrix"
                                 if (bi < 0 || bi > model.C.width)
                                     Errors_1.default.add("invalid basis element: " + bi);
                             }
-                            if (model.E.width < 2)
-                                Errors_1.default.add("position should have 2 values");
-                            if (model.E.valid && model.E.width >= 2) {
-                                let pi = model.E.items[0][0];
-                                let pj = model.E.items[0][1];
-                                if (pi > model.A.height - 1)
-                                    Errors_1.default.add("invalid l element position: " + pi);
-                                if (pj > model.A.width - 1)
-                                    Errors_1.default.add("invalid r element position: " + pj);
-                                if (model.A.items[pi][pj] === 0)
-                                    Errors_1.default.add("element at position l r can not be zero");
-                            }
                         }
                     });
                     //
@@ -799,12 +763,10 @@ System.register("main", ["Test/Test", "Math/Simplex", "UI/Errors", "Math/Matrix"
                 AString: "",
                 CString: "",
                 BString: "",
-                EString: "",
                 //
                 A: new Matrix_4.default(),
                 C: new Matrix_4.default(),
                 B: new Matrix_4.default(),
-                E: new Matrix_4.default()
             }, modelProxyHandler);
             console.log('DOM fully loaded and parsed');
             bindMobileHardwareBtn();
@@ -812,23 +774,14 @@ System.register("main", ["Test/Test", "Math/Simplex", "UI/Errors", "Math/Matrix"
             matrixInputEl = document.getElementById("input");
             matrixInputEl.addEventListener('keyup', inputChanged);
             matrixOutputEl = document.getElementById("output");
-            elEl = document.getElementById("elEl");
-            elEl.addEventListener('keyup', e => eInputChanged(e.target));
             cInputEl = document.getElementById("cInput");
             cInputEl.addEventListener('keyup', e => cInputChanged(e.target));
             bInputEl = document.getElementById("bInput");
             bInputEl.addEventListener('keyup', e => bInputChanged(e.target));
-            deltaOutputEl = document.getElementById("deltaOutput");
-            runEl = document.getElementById("runBtn");
-            runEl.addEventListener('click', e => mathRun());
-            runDeltasEl = document.getElementById("run2Btn");
-            runDeltasEl.addEventListener('click', e => printDeltas());
             //
             runSimplexBtn = document.getElementById("runSimplex");
             runSimplexBtn.addEventListener("click", e => runSimplex('cInput', 'bInput', 'input', 'testRes'));
             //
-            moveUpEl = document.getElementById("moveUpBtn");
-            moveUpEl.addEventListener('click', e => moveUp());
             setTestEls = document.getElementsByClassName("setTest");
             for (let setTestEl of setTestEls)
                 setTestEl.addEventListener("click", e => setTestData(Number(e.target.getAttribute("data-index"))));
@@ -836,7 +789,6 @@ System.register("main", ["Test/Test", "Math/Simplex", "UI/Errors", "Math/Matrix"
             cInputEl.dispatchEvent(new Event('keyup'));
             bInputEl.dispatchEvent(new Event('keyup'));
             matrixInputEl.dispatchEvent(new Event('keyup'));
-            elEl.dispatchEvent(new Event('keyup'));
             //
             console.log('inited;');
             window.command = new class {

@@ -9,12 +9,8 @@ import { parseMatrix, formatMatrix } from "./UI/Format";
 
 let matrixInputEl: HTMLTextAreaElement;
 let matrixOutputEl: HTMLTextAreaElement;
-let elEl: HTMLTextAreaElement;
 let cInputEl: HTMLTextAreaElement;
 let bInputEl: HTMLTextAreaElement;
-let deltaOutputEl: HTMLTextAreaElement;
-let runEl: HTMLButtonElement;
-let runDeltasEl: HTMLButtonElement;
 
 let modelProxyHandler = {
     set: function (target: any, propKey: string, propValue: any) {
@@ -23,9 +19,6 @@ let modelProxyHandler = {
             model[propKey.charAt(0)] = matrix
             console.table(matrix.items)
         }
-        console.log('proxy set;')
-        runEl.disabled = !(model.A.valid && model.E.valid);
-        runDeltasEl.disabled = !(model.A.valid && model.B.valid && model.C.valid);
         Errors.check(() => {
             if (!model.A.valid) Errors.add("invalid matrix (A)");
             if (model.A.valid) {
@@ -37,18 +30,6 @@ let modelProxyHandler = {
                     let bi = model.B.items[i];
                     if (bi < 0 || bi > model.C.width)
                         Errors.add("invalid basis element: " + bi);
-                }
-                if (model.E.width < 2)
-                    Errors.add("position should have 2 values");
-                if (model.E.valid && model.E.width >= 2) {
-                    let pi = model.E.items[0][0]
-                    let pj = model.E.items[0][1]
-                    if (pi > model.A.height - 1)
-                        Errors.add("invalid l element position: " + pi);
-                    if (pj > model.A.width - 1)
-                        Errors.add("invalid r element position: " + pj);
-                    if (model.A.items[pi][pj] === 0)
-                        Errors.add("element at position l r can not be zero")
                 }
             }
         })
@@ -62,12 +43,10 @@ let model = new Proxy({
     AString: "",
     CString: "",
     BString: "",
-    EString: "",
     //
     A: new Matrix(),
     C: new Matrix(),
     B: new Matrix(),
-    E: new Matrix()
 }, modelProxyHandler);
 
 console.log('DOM fully loaded and parsed');
@@ -76,23 +55,14 @@ Errors.init();
 matrixInputEl = document.getElementById("input") as HTMLTextAreaElement;
 matrixInputEl.addEventListener('keyup', inputChanged)
 matrixOutputEl = document.getElementById("output") as HTMLTextAreaElement;
-elEl = document.getElementById("elEl") as HTMLTextAreaElement;
-elEl.addEventListener('keyup', e => eInputChanged(e.target as HTMLTextAreaElement))
 cInputEl = document.getElementById("cInput") as HTMLTextAreaElement;
 cInputEl.addEventListener('keyup', e => cInputChanged(e.target as HTMLTextAreaElement))
 bInputEl = document.getElementById("bInput") as HTMLTextAreaElement;
 bInputEl.addEventListener('keyup', e => bInputChanged(e.target as HTMLTextAreaElement))
-deltaOutputEl = document.getElementById("deltaOutput") as HTMLTextAreaElement;
-runEl = document.getElementById("runBtn") as HTMLButtonElement;
-runEl.addEventListener('click', e => mathRun())
-runDeltasEl = document.getElementById("run2Btn") as HTMLButtonElement;
-runDeltasEl.addEventListener('click', e => printDeltas())
 //
 let runSimplexBtn = document.getElementById("runSimplex") as HTMLButtonElement;
 runSimplexBtn.addEventListener("click", e => runSimplex('cInput', 'bInput', 'input', 'testRes'))
 //
-let moveUpEl = document.getElementById("moveUpBtn") as HTMLButtonElement;
-moveUpEl.addEventListener('click', e => moveUp())
 let setTestEls = document.getElementsByClassName("setTest")
 for (let setTestEl of setTestEls)
     setTestEl.addEventListener("click", e => setTestData(Number((e.target as HTMLAnchorElement).getAttribute("data-index"))))
@@ -100,7 +70,6 @@ for (let setTestEl of setTestEls)
 cInputEl.dispatchEvent(new Event('keyup'));
 bInputEl.dispatchEvent(new Event('keyup'));
 matrixInputEl.dispatchEvent(new Event('keyup'));
-elEl.dispatchEvent(new Event('keyup'));
 //
 console.log('inited;');
 //matrix input
@@ -121,28 +90,6 @@ function cInputChanged(el: HTMLTextAreaElement) {
 //B-vector input
 function bInputChanged(el: HTMLTextAreaElement) {
     model.BString = el.value
-}
-//E-vector input
-function eInputChanged(el: HTMLTextAreaElement) {
-    model.EString = el.value
-}
-
-function mathRun() {
-    let pi = model.E.items[0][0]
-    let pj = model.E.items[0][1]
-    let T = transform(model.A, pi, pj)
-    matrixOutputEl.value = formatMatrix(T)
-}
-
-function printDeltas() {
-    let deltas = getDeltas(new Tableau(model.A, model.B, model.C));
-    deltaOutputEl.value = deltas.items[0].reduce((a, delta) => a += `${delta.toFixed(3)}, `, "");
-}
-
-function moveUp() {
-    matrixInputEl.value = matrixOutputEl.value;
-    matrixOutputEl.value = "";
-    matrixInputEl.dispatchEvent(new Event('keyup'));
 }
 
 function bindMobileHardwareBtn() {
@@ -204,12 +151,10 @@ function setTestData(index = 0) {
     matrixInputEl.value = testData[index].AString
     cInputEl.value = testData[index].CString
     bInputEl.value = testData[index].BString
-    elEl.value = "0,0";
     //
     cInputEl.dispatchEvent(new Event('keyup'));
     bInputEl.dispatchEvent(new Event('keyup'));
     matrixInputEl.dispatchEvent(new Event('keyup'));
-    elEl.dispatchEvent(new Event('keyup'));
 }
 
 // commands
