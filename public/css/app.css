@@ -69,3 +69,6 @@ label.log { font-size: 14px; font-family: 'Courier New', Courier, monospace; dis
 	margin-top: 5px;
 	overflow : auto;
 }
+.pivot {
+	background-color: greenyellow;
+}

@@ -3,27 +3,27 @@ import { Tableau, SimplexLog } from "../Math/Simplex";
 import { normalizedNumber } from "./Format";
 
 export function matrixToTable(m: Matrix): HTMLTableElement {
-	let digits = 3;
-	let table = document.createElement("table");
-	for (let i = 0; i < m.height; i++) {
-		let row = document.createElement("tr");
-		for (let j = 0; j < m.width; j++) {
-			let cell = document.createElement("td");
-			let val = m.items[i][j];
-			if (!isNaN(val)) {
-				cell.innerHTML = normalizedNumber(val, digits);
-				cell.setAttribute("class", "num");
-			}
-			else
-				cell.innerHTML = "---";
-			row.appendChild(cell);
-		}
-		table.appendChild(row);
-	}
-	return table;
+    let digits = 3;
+    let table = document.createElement("table");
+    for (let i = 0; i < m.height; i++) {
+        let row = document.createElement("tr");
+        for (let j = 0; j < m.width; j++) {
+            let cell = document.createElement("td");
+            let val = m.items[i][j];
+            if (!isNaN(val)) {
+                cell.innerHTML = normalizedNumber(val, digits);
+                cell.setAttribute("class", "num");
+            }
+            else
+                cell.innerHTML = "---";
+            row.appendChild(cell);
+        }
+        table.appendChild(row);
+    }
+    return table;
 };
 
-export function tableauToTable(t: Tableau): HTMLTableElement {
+export function tableauWithDeltasAndPivotToTable(t: Tableau, deltas: Matrix, pivotIndexes: [number, number] | null): HTMLTableElement {
     let rowShift = 2;
     let colShift = 4;
     let n = t.B.width + rowShift;
@@ -78,51 +78,50 @@ export function tableauToTable(t: Tableau): HTMLTableElement {
                     let val = t.A.items[i - rowShift][j - colShift];
                     cell.innerHTML = normalizedNumber(val);
                     cell.setAttribute("class", "num");
+                    if (pivotIndexes 
+                        && pivotIndexes[0] === i - rowShift 
+                        && pivotIndexes[1] === j - colShift) {
+                            cell.classList.add("pivot")
+                        }
                 }
             }
             row.appendChild(cell);
         }
         table.appendChild(row);
     }
+    let deltasRow = document.createElement("tr");
+    let deltasCell = document.createElement("td");
+    deltasCell.colSpan = 5;
+    deltasCell.innerHTML = "deltas:";
+    deltasRow.appendChild(deltasCell);
+    for (let j = 0; j < deltas.width; j++) {
+        let cell = document.createElement("td");
+        cell.innerHTML = normalizedNumber(deltas.items[0][j]);
+        cell.setAttribute("class", "num");
+        deltasRow.appendChild(cell);
+    }
+    table.appendChild(deltasRow);
     return table;
 }
 
 export function printSimplexLog(log: SimplexLog, el: HTMLElement): void {
     label(el, "=================================");
-    let fn = "max f(x) = ";
-    for (let i = 0; i < log.problem.width; i++) {
+    let fn = `${log.problemType} f(x) = `;
+    for (let i = 0; i < log.problemMatrix.width; i++) {
         if (i > 0) fn += " + ";
-        fn += log.problem.items[0][i] + "&times;X" + (i + 1);
+        fn += log.problemMatrix.items[0][i] + "&times;X" + (i + 1);
     }
     label(el, fn + " ;");
     for (let it = 0; it < log.iterations.length; it++) {
         let iteration = log.iterations[it];
         label(el, "----------------------------");
         label(el, "Iteration " + it + ":");
-        el.appendChild(tableauToTable(iteration.table));
-        if (iteration.minusRowIndex === -1) {
-            if (!iteration.x) throw new Error(`Invalid log: missing x`);
-            label(el, "=================================");
-            label(el, "No negative elements.");
+        el.appendChild(tableauWithDeltasAndPivotToTable(iteration.table, iteration.deltas, iteration.pivot));
+        if (iteration.x && iteration.fx) {
             label(el, "x* = ");
             el.appendChild(matrixToTable(iteration.x));
-            let res = 0;
-            for (let i = 0; i < iteration.table.C.width; i++)
-                res += iteration.table.C.items[0][i] * iteration.x.items[0][i];
-            label(el, "f(x*) = " + res);
-        }
-        else {
-            if (!iteration.deltas) throw new Error(`Invalid log: missing deltas`);
-            if (!iteration.gammasData) throw new Error(`Invalid log: missing gammasData`);
-            label(el, "deltas = ");
-            el.appendChild(matrixToTable(iteration.deltas));
-            if (!iteration.gammasData.hasMinusInRow) {
-                label(el, "=================================");
-                label(el, "Has no negatives in negative row. Problem can not be solved.");
-                return; //end
-            }
-            label(el, "gammas = ");
-            el.appendChild(matrixToTable(iteration.gammasData.gammas));
+            label(el, "f(x*) = ");
+            el.appendChild(matrixToTable(new Matrix([[iteration.fx]])));
         }
     }
 }

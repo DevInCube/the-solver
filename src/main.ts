@@ -1,7 +1,7 @@
 console.log('loaded;');
 
 import { testData } from "./Test/Test";
-import { doSimplex, Tableau, transform, getDeltas } from "./Math/Simplex";
+import { doSimplex, Tableau, transform, getDeltas, Problem, ProblemType } from "./Math/Simplex";
 import Errors from "./UI/Errors";
 import Matrix from "./Math/Matrix";
 import { printSimplexLog } from "./UI/DomOutput";
@@ -136,13 +136,13 @@ function mathRun() {
 
 function printDeltas() {
     let deltas = getDeltas(new Tableau(model.A, model.B, model.C));
-    deltaOutputEl.value = deltas.items[0].reduce((a, delta) => a += delta + ", ", "");
+    deltaOutputEl.value = deltas.items[0].reduce((a, delta) => a += `${delta.toFixed(3)}, `, "");
 }
 
 function moveUp() {
     matrixInputEl.value = matrixOutputEl.value;
     matrixOutputEl.value = "";
-    // inputChanged(matrixInputEl); // @todo
+    matrixInputEl.dispatchEvent(new Event('keyup'));
 }
 
 function bindMobileHardwareBtn() {
@@ -185,12 +185,14 @@ function checkSimplexTable(table: Tableau) {
 }
 
 function runSimplex(cIn: string, bIn: string, aIn: string, out: string) {
+    let type = (document.getElementById("problem-type") as HTMLSelectElement).value;
+    console.log(type)
     let outEl = document.getElementById(out) as HTMLDivElement;
     let table = getSimplexTable(cIn, bIn, aIn)
     outEl.innerHTML = "";
     checkSimplexTable(table);
     if (!Errors.hasErrors()) {
-        let log = doSimplex(table)
+        let log = doSimplex(new Problem(type as ProblemType,table))
         printSimplexLog(log, outEl)
     }
 }
@@ -208,4 +210,14 @@ function setTestData(index = 0) {
     bInputEl.dispatchEvent(new Event('keyup'));
     matrixInputEl.dispatchEvent(new Event('keyup'));
     elEl.dispatchEvent(new Event('keyup'));
+}
+
+// commands
+
+// commands
+declare global {
+    interface Window { command: any; }
+}
+window.command = new class {
+    //
 }
