@@ -8,8 +8,8 @@
 	<link rel="stylesheet" type="text/css" href="public/css/app.css">
 
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/systemjs/0.20.19/system.js"></script>
-	<script src="./public/system.config.js"></script>
-	<script src="./public/app.js"></script>
+	<script src="./public/javascripts/system.config.js"></script>
+	<script src="./public/javascripts/app.js"></script>
 	<script>
 		window.addEventListener('load', function (e) {
 			System
@@ -24,15 +24,14 @@
 		<ul id="errorList"></ul>
 	</div>
 	<div class="header">
-		<div class="caption-big">Порєшатєль</div>
-		<div class="caption-small">П</div>
-		<div class="caption-method right">Simplex</div>
+		<div class="caption-big">Simplex</div>
+		<div class="caption-small">S</div>
 	</div>
 	<div class="body">
 		<div>
 			<select id="problem-type">
 				<option key="0" value="max" selected>Maximization</option>
-				<option key="1" value="min" >Minimization</option>
+				<option key="1" value="min">Minimization</option>
 			</select>
 		</div>
 		<div>
@@ -40,15 +39,15 @@
 			<textarea id="cInput" class="block" rows="1"></textarea>
 		</div>
 		<div>
-			<div class="tip"> Basis indexes: (start from 1) </div>
+			<div class="tip"> Basis indexes: </div>
 			<textarea id="bInput" class="block" rows="1"></textarea>
 		</div>
 		<div>
-			<div class="tip"> Input matrix: (separate numbers by comma, lines by semicolon) </div>
+			<div class="tip"> Input matrix: (separate rows with semicolon, values with comma) </div>
 			<textarea id="input" class="block" rows="5"></textarea>
 		</div>
 		<div class="block">
-			<button id="runSimplex">Run Simplex</button>
+			<button id="runSimplex">Run</button>
 		</div>
 		<div class="block">
 			<div id="testRes"></div>

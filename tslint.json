@@ -8,11 +8,14 @@
         "member-ordering": false,
         "max-classes-per-file": false,
         "interface-name": false,
-        "space-before-function-paren": [true, {
-            "anonymous": "always",
-            "named": "never",
-            "asyncArrow": "always"
-        }],
+        "space-before-function-paren": [
+            true,
+            {
+                "anonymous": "always",
+                "named": "never",
+                "asyncArrow": "always"
+            }
+        ],
         "object-literal-sort-keys": false
     }
 }

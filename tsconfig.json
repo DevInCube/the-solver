@@ -1,13 +1,11 @@
 {
     "compilerOptions": {
-        "outFile": "./public/app.js",
+        "outFile": "public/javascripts/app.js",
         "module": "system",
         "moduleResolution": "node",
         "target": "es2017",
-        
         "watch": true,
         "sourceMap": true,
-
         "noImplicitAny": true,
         "noImplicitReturns": true,
         "noImplicitThis": true,

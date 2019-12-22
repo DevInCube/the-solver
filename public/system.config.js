@@ -1,5 +1,0 @@
-SystemJS.config({
-    map: {
-      
-    }
-  });

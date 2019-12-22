@@ -71,7 +71,7 @@ export function doSimplex(problem: Problem): SimplexLog {
 		iterations: []
 	};
 	let iIteration = 0;
-	while (iIteration++ < 100) {  // infinie loop constraint
+	while (iIteration++ < 1000) {  // infinite loop constraint
 		let iteration = <SimplexLogIteration>{
 			table: table.clone(),
 		};

@@ -1,7 +1,3 @@
-import { Tableau } from "../Math/Simplex";
-import { printSimplexLog } from "../UI/DomOutput";
-import { parseMatrix } from "../UI/Format";
-
 export const testData = [
 	{
 		AString: `31,32,82,41,1,0,0;

@@ -1,6 +1,64 @@
-System.register("Math/Matrix", [], function (exports_1, context_1) {
-    var Matrix;
+System.register("Test/Test", [], function (exports_1, context_1) {
+    var testData;
     var __moduleName = context_1 && context_1.id;
+    return {
+        setters: [],
+        execute: function () {
+            exports_1("testData", testData = [
+                {
+                    AString: `31,32,82,41,1,0,0;
+-6,-8,-1,91,0,1,0;
+87,7,73,-9,0,0,1`,
+                    BString: `4,5,6`,
+                    CString: `-54,-58,-64,0,0,0`,
+                },
+                {
+                    CString: `-6,10,0,0,0,0`,
+                    BString: `4,5,6`,
+                    AString: `-6,-12,-7,-3,1,0,0
+10,-7,-13,2,0,1,0
+13,3,-2,0,0,0,1`,
+                },
+                // "minus test"
+                {
+                    CString: `-54,-58,-64,0,0,0,0`,
+                    BString: `4,1,6,7`,
+                    AString: `7,0,78,405,1,4,0,0;
+0.75,1,0.125,-11.375,0,-0.125,0,0;
+37.75,0,72.125,70.625,0,0.875,1,0;
+-0.75,0,-0.125,11.075,0,0.125,0,1`,
+                },
+                // normal
+                {
+                    CString: `-7,-10,-9,8,0,0,0`,
+                    BString: `5,6,7`,
+                    AString: `2,-4,6,9,5,1,0,0;
+5,5,8,-6,-5,0,1,0;
+4,-10,7,-2,-4,0,0,1`,
+                },
+                // normal (min)
+                {
+                    CString: `24,-59,-25,-71,0,0,0`,
+                    BString: `5,6,7`,
+                    AString: `16,-48,-84,-67,-37,1,0,0;
+1,-34,-54,-66,-17,0,1,0;
+16,11,8,21,14,0,0,1 `,
+                },
+                // normal (max)
+                {
+                    CString: `61,12,-13,-4,0,0,0`,
+                    BString: `5,6,7`,
+                    AString: `39,80,19,-25,22,1,0,0;
+50,64,-32,37,78,0,1,0;
+58,56,40,67,11,0,0,1 `,
+                },
+            ]);
+        }
+    };
+});
+System.register("Math/Matrix", [], function (exports_2, context_2) {
+    var Matrix;
+    var __moduleName = context_2 && context_2.id;
     return {
         setters: [],
         execute: function () {
@@ -30,13 +88,13 @@ System.register("Math/Matrix", [], function (exports_1, context_1) {
                     return m;
                 }
             };
-            exports_1("default", Matrix);
+            exports_2("default", Matrix);
         }
     };
 });
-System.register("Math/Simplex", ["Math/Matrix"], function (exports_2, context_2) {
+System.register("Math/Simplex", ["Math/Matrix"], function (exports_3, context_3) {
     var Matrix_1, Tableau, ProblemType, Problem;
-    var __moduleName = context_2 && context_2.id;
+    var __moduleName = context_3 && context_3.id;
     function getSolution(table) {
         // get result x*
         let x = new Matrix_1.default([Array(table.C.width).fill(0)]);
@@ -58,7 +116,7 @@ System.register("Math/Simplex", ["Math/Matrix"], function (exports_2, context_2)
             iterations: []
         };
         let iIteration = 0;
-        while (iIteration++ < 100) { // infinie loop constraint
+        while (iIteration++ < 1000) { // infinite loop constraint
             let iteration = {
                 table: table.clone(),
             };
@@ -153,7 +211,7 @@ System.register("Math/Simplex", ["Math/Matrix"], function (exports_2, context_2)
         }
         return log;
     }
-    exports_2("doSimplex", doSimplex);
+    exports_3("doSimplex", doSimplex);
     // m - Matrix, pi, pj - int
     function transform(m, pi, pj) {
         if (!m.valid)
@@ -179,7 +237,7 @@ System.register("Math/Simplex", ["Math/Matrix"], function (exports_2, context_2)
         }
         return res;
     }
-    exports_2("transform", transform);
+    exports_3("transform", transform);
     function getGammasData(table, minusRowIndex, deltas) {
         let gammas = Matrix_1.default.create(1, table.C.width);
         let minGamma = Infinity;
@@ -205,7 +263,7 @@ System.register("Math/Simplex", ["Math/Matrix"], function (exports_2, context_2)
             hasMinusInRow,
         };
     }
-    exports_2("getGammasData", getGammasData);
+    exports_3("getGammasData", getGammasData);
     // source: https://stackoverflow.com/a/19722641/6634744
     function round(n, places = 3) {
         const k = 10 ** places;
@@ -228,7 +286,7 @@ System.register("Math/Simplex", ["Math/Matrix"], function (exports_2, context_2)
         }
         return new Matrix_1.default([deltas.slice(1)]);
     }
-    exports_2("getDeltas", getDeltas);
+    exports_3("getDeltas", getDeltas);
     return {
         setters: [
             function (Matrix_1_1) {
@@ -249,26 +307,82 @@ System.register("Math/Simplex", ["Math/Matrix"], function (exports_2, context_2)
                     return new Tableau(this.A.clone(), this.B.clone(), this.C.clone());
                 }
             };
-            exports_2("Tableau", Tableau);
+            exports_3("Tableau", Tableau);
             (function (ProblemType) {
                 ProblemType["Max"] = "max";
                 ProblemType["Min"] = "min";
             })(ProblemType || (ProblemType = {}));
-            exports_2("ProblemType", ProblemType);
+            exports_3("ProblemType", ProblemType);
             Problem = class Problem {
                 constructor(type, table) {
                     this.type = type;
                     this.table = table;
                 }
             };
-            exports_2("Problem", Problem);
+            exports_3("Problem", Problem);
         }
     };
 });
-System.register("UI/Format", ["Math/Matrix"], function (exports_3, context_3) {
+System.register("UI/Errors", [], function (exports_4, context_4) {
+    var Errors;
+    var __moduleName = context_4 && context_4.id;
+    return {
+        setters: [],
+        execute: function () {
+            Errors = class Errors {
+                static init() {
+                    let error = this;
+                    error.errEl = document.getElementById("error");
+                    error.errorListEl = document.getElementById("errorList");
+                    if (error.errEl && error.errorListEl)
+                        error.errEl.onclick = (function () {
+                            if (error.errorListEl && error.errorListEl) {
+                                while (error.errorListEl.hasChildNodes()) {
+                                    error.errorListEl.removeChild(error.errorListEl.lastChild);
+                                }
+                            }
+                        });
+                }
+                static checkBegin() {
+                    let error = this;
+                    if (error.errorListEl && error.errorListEl)
+                        while (error.errorListEl.children.length > 0)
+                            error.errorListEl.removeChild(error.errorListEl.lastChild);
+                }
+                static add(msg) {
+                    let item = document.createElement("li");
+                    item.innerHTML = msg;
+                    let error = this;
+                    if (error.errorListEl)
+                        error.errorListEl.appendChild(item);
+                }
+                static checkEnd() {
+                    let error = this;
+                    if (error.errEl && error.errorListEl)
+                        error.errEl.style.opacity = ((error.errorListEl.children.length === 0) ? 0 : 0.9).toString();
+                }
+                static check(checkFun) {
+                    this.checkBegin();
+                    checkFun();
+                    this.checkEnd();
+                }
+                static hasErrors() {
+                    let error = this;
+                    if (error.errorListEl)
+                        return error.errorListEl.children.length > 0;
+                    return false;
+                }
+            };
+            Errors.errorListEl = null;
+            Errors.errEl = null;
+            exports_4("default", Errors);
+        }
+    };
+});
+System.register("UI/Format", ["Math/Matrix"], function (exports_5, context_5) {
     var Matrix_2;
-    var __moduleName = context_3 && context_3.id;
-    //returns Matrix instance parsed from string
+    var __moduleName = context_5 && context_5.id;
+    // returns Matrix instance parsed from string
     function parseMatrix(str) {
         let m = new Matrix_2.default();
         if (!str) {
@@ -311,7 +425,7 @@ System.register("UI/Format", ["Math/Matrix"], function (exports_3, context_3) {
             }
         }
     }
-    exports_3("parseMatrix", parseMatrix);
+    exports_5("parseMatrix", parseMatrix);
     function formatMatrix(m, digits = 3) {
         let norm = normalizeMatrixOutput(m, digits);
         return norm.map(row => row.join(' , ')).join(';\n');
@@ -325,7 +439,7 @@ System.register("UI/Format", ["Math/Matrix"], function (exports_3, context_3) {
             return copy;
         }
     }
-    exports_3("formatMatrix", formatMatrix);
+    exports_5("formatMatrix", formatMatrix);
     function normalizedNumber(number, digits = 3) {
         let num = number;
         let fixed = num.toFixed(digits);
@@ -333,7 +447,7 @@ System.register("UI/Format", ["Math/Matrix"], function (exports_3, context_3) {
         let frac = num - Math.trunc(num);
         return (num !== 0 && (frac !== 0)) ? fixed : num.toFixed(0);
     }
-    exports_3("normalizedNumber", normalizedNumber);
+    exports_5("normalizedNumber", normalizedNumber);
     return {
         setters: [
             function (Matrix_2_1) {
@@ -344,9 +458,9 @@ System.register("UI/Format", ["Math/Matrix"], function (exports_3, context_3) {
         }
     };
 });
-System.register("UI/DomOutput", ["Math/Matrix", "UI/Format"], function (exports_4, context_4) {
+System.register("UI/DomOutput", ["Math/Matrix", "UI/Format"], function (exports_6, context_6) {
     var Matrix_3, Format_1;
-    var __moduleName = context_4 && context_4.id;
+    var __moduleName = context_6 && context_6.id;
     function matrixToTable(m) {
         let digits = 3;
         let table = document.createElement("table");
@@ -367,7 +481,7 @@ System.register("UI/DomOutput", ["Math/Matrix", "UI/Format"], function (exports_
         }
         return table;
     }
-    exports_4("matrixToTable", matrixToTable);
+    exports_6("matrixToTable", matrixToTable);
     function tableauWithDeltasAndPivotToTable(t, deltas, pivotIndexes) {
         let rowShift = 2;
         let colShift = 4;
@@ -449,7 +563,7 @@ System.register("UI/DomOutput", ["Math/Matrix", "UI/Format"], function (exports_
         table.appendChild(deltasRow);
         return table;
     }
-    exports_4("tableauWithDeltasAndPivotToTable", tableauWithDeltasAndPivotToTable);
+    exports_6("tableauWithDeltasAndPivotToTable", tableauWithDeltasAndPivotToTable);
     function printSimplexLog(log, el) {
         label(el, "=================================");
         let fn = `${log.problemType} f(x) = `;
@@ -475,7 +589,7 @@ System.register("UI/DomOutput", ["Math/Matrix", "UI/Format"], function (exports_
             }
         }
     }
-    exports_4("printSimplexLog", printSimplexLog);
+    exports_6("printSimplexLog", printSimplexLog);
     function label(el, string) {
         let lbl = document.createElement("label");
         lbl.setAttribute("class", "log");
@@ -493,120 +607,6 @@ System.register("UI/DomOutput", ["Math/Matrix", "UI/Format"], function (exports_
         ],
         execute: function () {
             ;
-        }
-    };
-});
-System.register("Test/Test", [], function (exports_5, context_5) {
-    var testData;
-    var __moduleName = context_5 && context_5.id;
-    return {
-        setters: [],
-        execute: function () {
-            exports_5("testData", testData = [
-                {
-                    AString: `31,32,82,41,1,0,0;
--6,-8,-1,91,0,1,0;
-87,7,73,-9,0,0,1`,
-                    BString: `4,5,6`,
-                    CString: `-54,-58,-64,0,0,0`,
-                },
-                {
-                    CString: `-6,10,0,0,0,0`,
-                    BString: `4,5,6`,
-                    AString: `-6,-12,-7,-3,1,0,0
-10,-7,-13,2,0,1,0
-13,3,-2,0,0,0,1`,
-                },
-                // "minus test"
-                {
-                    CString: `-54,-58,-64,0,0,0,0`,
-                    BString: `4,1,6,7`,
-                    AString: `7,0,78,405,1,4,0,0;
-0.75,1,0.125,-11.375,0,-0.125,0,0;
-37.75,0,72.125,70.625,0,0.875,1,0;
--0.75,0,-0.125,11.075,0,0.125,0,1`,
-                },
-                // normal
-                {
-                    CString: `-7,-10,-9,8,0,0,0`,
-                    BString: `5,6,7`,
-                    AString: `2,-4,6,9,5,1,0,0;
-5,5,8,-6,-5,0,1,0;
-4,-10,7,-2,-4,0,0,1`,
-                },
-                // normal (min)
-                {
-                    CString: `24,-59,-25,-71,0,0,0`,
-                    BString: `5,6,7`,
-                    AString: `16,-48,-84,-67,-37,1,0,0;
-1,-34,-54,-66,-17,0,1,0;
-16,11,8,21,14,0,0,1 `,
-                },
-                // normal (max)
-                {
-                    CString: `61,12,-13,-4,0,0,0`,
-                    BString: `5,6,7`,
-                    AString: `39,80,19,-25,22,1,0,0;
-50,64,-32,37,78,0,1,0;
-58,56,40,67,11,0,0,1 `,
-                },
-            ]);
-        }
-    };
-});
-System.register("UI/Errors", [], function (exports_6, context_6) {
-    var Errors;
-    var __moduleName = context_6 && context_6.id;
-    return {
-        setters: [],
-        execute: function () {
-            Errors = class Errors {
-                static init() {
-                    let error = this;
-                    error.errEl = document.getElementById("error");
-                    error.errorListEl = document.getElementById("errorList");
-                    if (error.errEl && error.errorListEl)
-                        error.errEl.onclick = (function () {
-                            if (error.errorListEl && error.errorListEl) {
-                                while (error.errorListEl.hasChildNodes()) {
-                                    error.errorListEl.removeChild(error.errorListEl.lastChild);
-                                }
-                            }
-                        });
-                }
-                static checkBegin() {
-                    let error = this;
-                    if (error.errorListEl && error.errorListEl)
-                        while (error.errorListEl.children.length > 0)
-                            error.errorListEl.removeChild(error.errorListEl.lastChild);
-                }
-                static add(msg) {
-                    let item = document.createElement("li");
-                    item.innerHTML = msg;
-                    let error = this;
-                    if (error.errorListEl)
-                        error.errorListEl.appendChild(item);
-                }
-                static checkEnd() {
-                    let error = this;
-                    if (error.errEl && error.errorListEl)
-                        error.errEl.style.opacity = ((error.errorListEl.children.length === 0) ? 0 : 0.9).toString();
-                }
-                static check(checkFun) {
-                    this.checkBegin();
-                    checkFun();
-                    this.checkEnd();
-                }
-                static hasErrors() {
-                    let error = this;
-                    if (error.errorListEl)
-                        return error.errorListEl.children.length > 0;
-                    return false;
-                }
-            };
-            Errors.errorListEl = null;
-            Errors.errEl = null;
-            exports_6("default", Errors);
         }
     };
 });

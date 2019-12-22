@@ -1,6 +1,6 @@
 import Matrix from "../Math/Matrix";
 
-//returns Matrix instance parsed from string
+// returns Matrix instance parsed from string
 export function parseMatrix(str: string) {
 	let m = new Matrix();
 	if (!str) {

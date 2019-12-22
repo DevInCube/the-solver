@@ -78,11 +78,11 @@ export function tableauWithDeltasAndPivotToTable(t: Tableau, deltas: Matrix, piv
                     let val = t.A.items[i - rowShift][j - colShift];
                     cell.innerHTML = normalizedNumber(val);
                     cell.setAttribute("class", "num");
-                    if (pivotIndexes 
-                        && pivotIndexes[0] === i - rowShift 
+                    if (pivotIndexes
+                        && pivotIndexes[0] === i - rowShift
                         && pivotIndexes[1] === j - colShift) {
-                            cell.classList.add("pivot")
-                        }
+                        cell.classList.add("pivot")
+                    }
                 }
             }
             row.appendChild(cell);
