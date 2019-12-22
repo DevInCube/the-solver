@@ -7,15 +7,11 @@
 	<meta name="viewport" content="width=device-width, initial-scale=1" />
 	<link rel="stylesheet" type="text/css" href="public/css/app.css">
 
-	<script src="https://cdnjs.cloudflare.com/ajax/libs/systemjs/0.20.19/system.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/systemjs/0.21.6/system.js"></script>
 	<script src="./public/javascripts/system.config.js"></script>
 	<script src="./public/javascripts/app.js"></script>
-	<script>
-		window.addEventListener('load', function (e) {
-			System
-				.import('main')
-				.then(null, console.error.bind(console));
-		});
+	<script src="./public/javascripts/index.js">
+		
 	</script>
 </head>
 
@@ -35,7 +31,7 @@
 			</select>
 		</div>
 		<div>
-			<div class="tip"> C-vector (separate numbers by comma): </div>
+			<div class="tip"> C-vector (separate values with comma): </div>
 			<textarea id="cInput" class="block" rows="1"></textarea>
 		</div>
 		<div>
